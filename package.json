@@ -1,0 +1,21 @@
+{
+  "name": "ceramic-app",
+  "version": "0.0.1",
+  "description": "Ceramic is a tool to help build (mobile) applications with vite and jsx",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codefoxdev/ceramic-app.git"
+  },
+  "type": "module",
+  "author": "Codefoxdev",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/codefoxdev/ceramic-app/issues"
+  },
+  "homepage": "https://github.com/codefoxdev/ceramic-app#readme",
+  "exports": {
+    ".": "./dist/index.js",
+    "./jsx-runtime": "./dist/index.js"
+  }
+}
