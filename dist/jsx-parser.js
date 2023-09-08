@@ -19,11 +19,7 @@ export function h(tag, attrs, children) {
       if (name && attrs.hasOwnProperty(name)) {
         if (name == "children") continue;
         let value = attrs[name];
-        if (value === true) {
-          element.setAttribute(name, name);
-        } else if (value !== false && value != null) {
-          element.setAttribute(name, value.toString());
-        }
+        element.setAttribute(name, (value === true) ? value : value.toString());
       }
     }
   }

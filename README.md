@@ -96,3 +96,6 @@ Router
 JSX parser
 - Improve code structure and efficiency
 - Improve Fragment support
+- Add a parser that parses events in elements to custom id based events (events.js)
+APP
+- Add app `type`: sidebar, tabs, etc.

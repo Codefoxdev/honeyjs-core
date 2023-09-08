@@ -16,6 +16,8 @@
   "homepage": "https://github.com/codefoxdev/ceramic-app#readme",
   "exports": {
     ".": "./dist/index.js",
-    "./jsx-runtime": "./dist/index.js"
+    "./jsx-runtime": "./dist/index.js",
+    "./events": "./dist/events.js",
+    "./transitions": "./dist/transitions.js"
   }
 }

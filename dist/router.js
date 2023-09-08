@@ -3,6 +3,7 @@
 // Define transition
 
 import { render } from "./page.js";
+import { registerEventListener } from "./events.js";
 import { h } from "./jsx-parser.js";
 
 export let routes = [];
@@ -16,36 +17,46 @@ export function defineRoutes(routesConfig) {
   // TODO: Route validation
 }
 
-let _silentAnchors = [];
-
-document.addEventListener("click", (e) => {
-  let element = e.target;
-  if (_silentAnchors.indexOf(element.id) == -1) return;
-  e.preventDefault();
-  navigate(element.pathname);
-});
-
 export function A({ href, children }) {
-  const id = generateStringID(_silentAnchors);
-  _silentAnchors.push(id);
+  const id = registerEventListener("click", (e) => {
+    e.preventDefault();
+    navigate(e.target.pathname);
+  })
 
   return h("a", { id: id, href: href }, children);
 }
 
-let location = window.location.pathname;
+// HISTORY
 
-export const getLocation = () => location;
+let historyList = [ window.location.pathname ];
+let historyIndex = 0;
 
-export function navigate(targetPath) {
-  console.log(`Navigating: ${targetPath}`);
+export const getLocation = () => historyList[historyIndex];
 
-  render(routes.find(e => e.route == targetPath));
-  history.pushState({}, "", targetPath)
+export function back() {
+  historyIndex = Math.max(0, historyIndex - 1);
+  _render(historyIndex);
 }
 
-function generateStringID(arr) {
-  if (!Array.isArray(arr)) arr = [];
-  const rng = `a_${Math.random().toString(16).slice(2)}`;
-  if (arr.indexOf(rng) != -1) return generateStringID();
-  return rng;
+export function forward() {
+  historyIndex = Math.min(historyList.length - 1, historyIndex - 1);
+  _render(historyIndex);
+}
+
+export function navigate(targetPath) {
+  if (historyIndex < historyList.length - 1) {
+    historyList = historyList.splice(historyIndex + 1, historyList.length - 1 - historyIndex)
+  }
+  historyList.push(targetPath);
+  historyIndex = historyList.length - 1;
+  _render(historyIndex);
+}
+
+function _render(index) {
+  console.log(historyList);
+  if (!historyList[index]) return false;
+  const item = historyList[index];
+
+  render(routes.find(e => e.route == item));
+  history.pushState({}, "", item);
 }
