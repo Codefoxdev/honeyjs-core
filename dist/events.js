@@ -1,5 +1,5 @@
-let _ids = [];
-let _registered = [];
+let customListeners = [];
+let customKeys = [];
 
 /**
  * Registers an event listener with `callback` which gets called when `event` is called on the element with the returned id
@@ -8,36 +8,26 @@ let _registered = [];
  */
 export function registerEventListener(event, callback) {
   if (event.startsWith("on")) event = event.replace("on", "");
-  const _id = generateEventId(event);
+  const key = generateElementId();
 
-  registerDomEventListener(event, _id, callback);
-  return _id
+  registerDomEventListener(event, key, callback);
+  return key;
 }
 
-function generateEventId(event) {
-  const _id = `ceramic_data_${Math.random().toString(16).slice(2)}_${event}`;
-  if (_ids.indexOf(_id) != -1) return generateEventId(event);
-  return _id;
+export function generateElementId() {
+  const key = `ceramic_data_${Math.random().toString(16).slice(2)}`;
+  if (customKeys.indexOf(key) != -1) return generateElementId();
+  return key;
 }
 
-function registerDomEventListener(event, id, callback) {
-  let i = _registered.findIndex(e => e.event == event);
-  if(i == -1) {
-    _registered.push({ event, listeners: [] })
-    i = _registered.findIndex(e => e.event == event);
-
-    document.addEventListener("click", (e) => {
-      if (!e || !e.target) return;
-      const _ele = e.target;
-      const listeners = _registered.find(e => e.event == event)?.listeners;
-      if (!listeners) return;
-      const listener = listeners.find(e => e.id == _ele.id);
-      if (!listener) return;
-      listener.callback(e);
-    })
-  }
-  _ids.push(id);
-  _registered[i].listeners.push({ id, callback });
+function registerDomEventListener(event, key, callback) {
+  const obj = { event, key, callback }
+  customListeners.push(obj);
+  customKeys.push(key);
+  document.addEventListener(event, (e) => {
+    if (e.target.getAttribute("key") != key) return;
+    callback(e);
+  }) 
 }
 
 window.invokeCeramicEvent = (event) => {

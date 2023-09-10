@@ -18,12 +18,12 @@ export function defineRoutes(routesConfig) {
 }
 
 export function A({ href, children }) {
-  const id = registerEventListener("click", (e) => {
+  const key = registerEventListener("click", (e) => {
     e.preventDefault();
     navigate(e.target.pathname);
   })
 
-  return h("a", { id: id, href: href }, children);
+  return h("a", { key, href }, children);
 }
 
 // HISTORY
@@ -45,7 +45,7 @@ export function forward() {
 
 export function navigate(targetPath) {
   if (historyIndex < historyList.length - 1) {
-    historyList = historyList.splice(historyIndex + 1, historyList.length - 1 - historyIndex)
+    historyList.length = historyIndex + 1;
   }
   historyList.push(targetPath);
   historyIndex = historyList.length - 1;
@@ -53,10 +53,10 @@ export function navigate(targetPath) {
 }
 
 function _render(index) {
-  console.log(historyList);
   if (!historyList[index]) return false;
   const item = historyList[index];
 
   render(routes.find(e => e.route == item));
   history.pushState({}, "", item);
+  console.log(historyList);
 }

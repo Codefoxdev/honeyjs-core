@@ -1,3 +1,7 @@
+import { generateElementId } from "./events";
+
+const parseCustom = [ "key" ];
+
 export function h(tag, attrs, children) {
   let isCustom = (typeof tag == "function");
   let isFragment = isCustom && tag.name == "Fragment";
@@ -14,13 +18,12 @@ export function h(tag, attrs, children) {
     element = document.createElement("div");
   }
 
-  if (!isCustom) {
-    for (let name in attrs) {
-      if (name && attrs.hasOwnProperty(name)) {
-        if (name == "children") continue;
-        let value = attrs[name];
-        element.setAttribute(name, (value === true) ? value : value.toString());
-      }
+  for (let name in attrs) {
+    if (name && attrs.hasOwnProperty(name)) {
+      if (name == "children") continue;
+      if (isCustom && !parseCustom.includes(name)) continue;
+      let value = attrs[name];
+      element.setAttribute(name, (value === true) ? value : value.toString());
     }
   }
 

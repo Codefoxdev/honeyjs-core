@@ -1,5 +1,6 @@
 # Ceramic
 Ceramic is a tool that helps to build (mobile) applications with vite and jsx.
+It requires no (except for vite) external dependencies and is incredibly fast.
 
 THIS TOOL IS IN VERY EARLY STAGES AND SHOUDN'T BE USED IN A PRODUCTION APP YET
 
@@ -72,30 +73,62 @@ export default defineRoutes([
 ```
 
 ### JSX
-Ceramic uses vite's (or esbuild's) builtin jsx transformer alongside a custom jsx parser that transforms it into native html elements.
-To use it add the following in the `defineConfig` function in your vite config
-```ts
+Ceramic uses vite's (or esbuild's) builtin jsx transformer alongside a custom jsx parser that transforms it into h functions,
+which get parsed to native HTML elements by `ceramic/jsx-parser`.
+The vite config gets automatically updated once `ceramic/plugin` is used.
+
+```js
+import { defineConfig } from 'vite';
+import ceramic from "ceramic-app/plugin";
+
 export default defineConfig({
-  ...
-  esbuild: {
-    jsxInject: `import { h, Fragment } from "ceramic-app"`,
-    jsxFactory: "h",
-    jsxFragment: "Fragment",
-  }
-  ...
+  plugins: [ ceramic() ],
 });
 ```
-Note that when a function returns a Fragment, it will be transformed into a [documentFragment](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment).
+
+NOTE: when a function returns a Fragment, it will be transformed into a native [documentFragment](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment).
 Please make sure to read the documentation for this, as it can act a bit strange sometimes
 
+### Parser
+For the parsing off the jsx itself ceramic relies on vite's (or esbuild) builtin jsx parser,
+but ceramic does have a custom parser for on* event parameters (onclick, etc.) in jsx, as vite just puts the function source as the parameter.
+This is what a transformation might look like:
+```jsx
+...
+export function ClickableButton() {
+  return (
+    <button class="logo" onclick={back}>
+      <IconButton icon="chevron_left" />
+    </button>
+  );
+}
+...
+```
+Gets transformed to something like this
+```jsx
+import { registerEventListener as __key_registerEventListener } from "ceramic-app/events";
+const __key_click_1476ea87be4e1 = __key_registerEventListener("click", back);
+...
+export function ClickableButton() {
+  return (
+    <button class="logo" key={__key_click_1476ea87be4e1}>
+      <IconButton icon="chevron_left" />
+    </button>
+  );
+}
+...
+```
+Now Ceramic takes it over and registers the required eventlisteners and calls the provided callbacks accordingly.
+At the moment only default behaviour (as shown above) is supported, more customization options might come in the future.
 
 ## TODO
 Router
 - Route validation
 - Wildcard/urlparams support
-JSX parser
+
+JSX runtime
 - Improve code structure and efficiency
 - Improve Fragment support
-- Add a parser that parses events in elements to custom id based events (events.js)
+
 APP
-- Add app `type`: sidebar, tabs, etc.
+- Add app `type`: sidebar, tabs, etc. For changing nav behaviour
