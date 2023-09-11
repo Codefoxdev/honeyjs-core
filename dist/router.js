@@ -4,7 +4,7 @@
 
 import { render } from "./page.js";
 import { registerEventListener } from "./events.js";
-import { h } from "./jsx-parser.js";
+import { h } from "../jsx-runtime/index.js";
 
 export let routes = [];
 

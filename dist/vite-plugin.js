@@ -1,5 +1,3 @@
-import virtual from "@rollup/plugin-virtual";
-
 const REGEX = {
   extension: /\.(jsx|tsx)$/,
   onEvent: /on([a-zA-Z0-9_]*)\={([a-zA-Z0-9_\(\)\=\>]*)}/gm
@@ -7,10 +5,6 @@ const REGEX = {
 
 export default function(options = {}) {
   let parsed = [];
-
-  /* const rollupInputOptions = {
-    plugins: [ virtual({  }) ]
-  }  */
 
   return {
     name: "vite-plugin-ceramic",

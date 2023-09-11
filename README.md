@@ -130,5 +130,8 @@ JSX runtime
 - Improve code structure and efficiency
 - Improve Fragment support
 
+Parser
+- Add reactivity
+
 APP
 - Add app `type`: sidebar, tabs, etc. For changing nav behaviour

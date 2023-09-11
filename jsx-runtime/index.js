@@ -1,5 +1,3 @@
-import { generateElementId } from "./events";
-
 const parseCustom = [ "key" ];
 
 export function h(tag, attrs, children) {
