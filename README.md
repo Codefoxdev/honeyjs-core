@@ -135,3 +135,6 @@ Parser
 
 APP
 - Add app `type`: sidebar, tabs, etc. For changing nav behaviour
+  
+Package
+- Create a better name, `fluide` maybe?
