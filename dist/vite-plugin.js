@@ -38,7 +38,7 @@ function transformJSX(src, id) {
   let matches = [ ...src.matchAll(REGEX.onEvent) ];
 
   for (const match of matches) {
-    const varName = `__key_${match[1]}_${Math.random().toString(16).slice(2)}`;
+    const varName = `__key_${match[1].toLowerCase()}_${Math.random().toString(16).slice(2)}`;
     const injections = [
       `import { registerEventListener as __key_registerEventListener } from "ceramic-app/events";`,
       `const ${varName} = __key_registerEventListener("${match[1].toLowerCase()}", ${match[2]});`,

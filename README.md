@@ -129,12 +129,17 @@ Router
 JSX runtime
 - Improve code structure and efficiency
 - Improve Fragment support
+- Improved framework support; also support `className` and `onClick` instead of only `class` and `onclick`
 
 Parser
-- Add reactivity
+- Add reactivity > https://indepth.dev/posts/1289/solidjs-reactivity-to-rendering
 
 APP
 - Add app `type`: sidebar, tabs, etc. For changing nav behaviour
   
 Package
 - Create a better name, `fluide` maybe?
+
+## Known errors
+Vite
+- Editing a file triggers a full page reload instead of vite hmr
