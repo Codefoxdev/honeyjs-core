@@ -135,11 +135,8 @@ Parser
 - Add reactivity > https://indepth.dev/posts/1289/solidjs-reactivity-to-rendering
 
 APP
-- Add app `type`: sidebar, tabs, etc. For changing nav behaviour
+- Add app `preset`: sidebar, tabs, etc. For changing nav behaviour
+- Add transitions: fade, same component
   
 Package
 - Create a better name, `fluide` maybe?
-
-## Known errors
-Vite
-- Editing a file triggers a full page reload instead of vite hmr

@@ -1,13 +1,13 @@
-/// <reference types="node" />
+/// <reference types="dist/index.js" />
 
 declare module 'ceramic-app' {
-  declare interface CeramicAppOptions {
+  interface CeramicAppOptions {
     root: HTMLElement,
     autoHideSplashScreen: boolean,
     routeTransition: transition
   }
 
-  declare interface CeramicAppData {
+  interface CeramicAppData {
     on: (event: string, callback: Function) => void,
     render: () => void
   }
