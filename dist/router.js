@@ -1,16 +1,17 @@
-// Get current route
-// Change route
-// Define transition
+/**
+ * @typedef {import("./index.js").route} route
+ */
 
 import { render } from "./page.js";
 import { registerEventListener } from "./events.js";
 import { h } from "../jsx-runtime/index.js";
 
 export let routes = [];
+let currentRoute = null;
 
 /**
  * 
- * @param {Array<{ name: string, url: string, page: Function }>} routesConfig 
+ * @param {Array<route>} routesConfig 
  */
 export function defineRoutes(routesConfig) {
   routes = routesConfig;
@@ -28,7 +29,7 @@ export function A({ href, children }) {
 
 // HISTORY
 
-let historyList = [ window.location.pathname ];
+let historyList = [window.location.pathname];
 let historyIndex = 0;
 
 export const getLocation = () => historyList[historyIndex];
@@ -56,7 +57,10 @@ function _render(index) {
   if (!historyList[index]) return false;
   const item = historyList[index];
 
-  render(routes.find(e => e.route == item));
+  render(
+    routes.find(e => e.route == item),
+    currentRoute
+  );
   history.pushState({}, "", item);
-  console.log(historyList);
+  currentRoute = item;
 }

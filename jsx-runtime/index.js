@@ -1,4 +1,6 @@
-const parseCustom = [ "key" ];
+import { registerElementReference } from "../dist/events";
+
+const parseCustom = ["key", "ref", "preserve"];
 
 export function h(tag, attrs, children) {
   let isCustom = (typeof tag == "function");
@@ -7,7 +9,11 @@ export function h(tag, attrs, children) {
   attrs.children = children;
 
   let element = null;
-  if (isCustom && !isFragment) element = tag(attrs);
+  if (isCustom && !isFragment) {
+    element = tag(attrs);
+    console.log(element);
+    // check if it is a document fragment, else add ref tag?
+  }
   else if (isFragment) element = new DocumentFragment();
   else element = document.createElement(tag);
 

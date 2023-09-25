@@ -1,18 +1,12 @@
 /**
- * @typedef {{
- *  root: HTMLElement,
- *  autoHideSplashScreen: boolean,
- *  preset: "topbar" | "tabs" | "tabs-and-topbar" | "custom" | null
- * }} AppOptions
- * 
- * @typedef {{
- *  body: Function,
- *  topbar: Function | null,
- *  tabs: Function | null
- * }} PageOptions
+ * @typedef {import("./index.js").AppOptions} AppOptions
+ * @typedef {import("./index.js").PageOptions} PageOptions
+ * @typedef {import("./index.js").route} route
  */
 
 import { routes, getLocation } from "./router.js";
+import { generateElementRef } from "./events.js";
+import { Fragment, h } from "../jsx-runtime/index.js";
 
 /** @type {HTMLElement | null} */
 let AppRoot = null;
@@ -33,7 +27,7 @@ export function CeramicApp(options) {
       if (AppRoot == null) return console.error("Please specify an app root to render the pages");
       const location = getLocation();
       const route = routes.find(e => e.route == location) // TODO: Add wildcard support
-      render(route);
+      render(route, null);
       if (AppStarted == false) {
         AppStarted = true;
         emit("appload");
@@ -58,30 +52,40 @@ function emit(event, data) {
   listeners.forEach(e => e.callback(data));
 }
 
-let previousRoute = null;
-
-export function render(route) {
-  let [ nav, main ] = [ AppRoot.querySelector("nav"), AppRoot.querySelector("main") ];
-  const { navbar, body } = route.page;
-
-  if (!nav && navbar) AppRoot.insertBefore(nav = document.createElement("nav"), AppRoot.firstChild);
-  else if (nav && !navbar) AppRoot.removeChild(nav);
-  if (!main && body) AppRoot.append(main = document.createElement("main"));
-  else if (main && !body) AppRoot.removeChild(main);
-
-  if (!previousRoute || (navbar && !navbar.isEqualNode(previousRoute.page.navbar))) {
-    nav.innerHTML = "";
-    nav.append(navbar.cloneNode(true));
-  }
-  main.innerHTML = "";
-  main.append(body.cloneNode(true));
-
-  previousRoute = route;
+/**
+ * 
+ * @param {route} route 
+ * @param {route} previousRoute 
+ */
+export function render(route, previousRoute) {
+  const children = Array.from(AppRoot.children);
+  if (children.length == 0) return AppRoot.append(route.component);
+  const newChildren = Array.from(route.component.children);
 }
 
 /**
  * @param {PageOptions} options
  */
 export function CeramicPage(options) {
-  return options;
+  const page = _buildPage(options);
+  return page;
+}
+
+/**
+ * @param {PageOptions} options
+ */
+function _buildPage(options) {
+  let topbar = options.topbar;
+  let tabbar = options.tabbar;
+  let body = options.body;
+
+  if (topbar == null) topbar = AppOptions.defaults.topbar;
+  if (tabbar == null) tabbar = AppOptions.defaults.tabbar;
+
+  let contents = [];
+  if (topbar) contents.push(topbar);
+  if (tabbar) contents.push(tabbar);
+  if (body) contents.push(body);
+
+  return h(Fragment, null, ...contents);
 }
