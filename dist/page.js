@@ -90,7 +90,6 @@ export function render(route, previousRoute) {
     const isPreserve = skip.find(e => e.element.isEqualNode(child));
     const nextIndex = _closest(indices, index);
     const nextItem = skip.find(e => e.index == nextIndex)?.element;
-    console.log(nextIndex, nextItem, child)
     if (isPreserve) return;
     if (nextIndex < index) return AppRoot.appendChild(child);
     AppRoot.insertBefore(child, nextItem);

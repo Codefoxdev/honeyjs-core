@@ -21,11 +21,18 @@ export function registerEventListener(event, callback) {
  */
 export function registerElementReference(element) {
   const exists = references.find(e => e.element == element);
-  if (exists) return exists;
+  if (exists) return exists.ref;
   const ref = generateElementRef();
   const obj = { element, ref }
   references.push(obj);
   return ref;
+}
+
+/**
+ * @param {string} key 
+ */
+export function handleKeyEvent(e, key) {
+
 }
 
 export function generateElementRef() {
@@ -42,15 +49,32 @@ export function generateElementId() {
   return key;
 }
 
+/**
+ * Registers a DOM event listener and activates it when the dom has fully loaded
+ * @param {*} event 
+ * @param {*} key 
+ * @param {*} callback 
+ */
 function registerDomEventListener(event, key, callback) {
   const obj = { event, key, callback }
   listeners.push(obj);
+  // FIXME: Only last element gets returned, so event doesn't get called on parent
   document.addEventListener(event, (e) => {
+    console.log("clicked:", e.target);
     if (e.target.getAttribute("key") != key) return;
     callback(e);
   })
 }
 
-window.invokeCeramicEvent = (event) => {
-  return `hi_${event}`;
+/* addEventListener("load", (e) => {
+  listeners.forEach((item, index) => {
+    const ele = document.querySelector(`[key="${item.key}"]`);
+    console.log(ele);
+    if (!ele) return;
+    ele.addEventListener(ele.event, (e) => ele.callback(e));
+  });
+}); */
+
+window.invokeEvent = (event) => {
+  console.log(event)
 }

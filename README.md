@@ -155,9 +155,17 @@ APP
 
 - Add app `preset`: sidebar, tabs, etc. For changing nav behaviour
 - Add transitions: fade, same component
-- Support for scoped css with `@scope` rule
+- Support for scoped css with `@scope` rule and for importing a css file
 
 Package
 
 - Create a better name, `fluide` maybe?
-- Decide between `CeramicPage` or just how react / solid does it
+- Update docs
+
+## Reactivity strategy
+
+```jsx
+const [count, setCount] = hookFunction(initialvalue);
+```
+
+return a reference to the hook on `count.ref`, while count can still be a string, or integer, or array, etc.

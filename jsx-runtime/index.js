@@ -1,6 +1,7 @@
-import { registerElementReference } from "../dist/events";
+import { registerElementReference, handleKeyEvent } from "../dist/events";
 
 const parseCustom = ["key", "ref", "preserve"];
+const skipAttributes = ["events"];
 
 export function h(tag, attrs, children) {
   let isCustom = (typeof tag == "function");
@@ -11,8 +12,8 @@ export function h(tag, attrs, children) {
   let element = null;
   if (isCustom && !isFragment) {
     element = tag(attrs);
-    //console.log(element);
-    // check if it is a document fragment, else add ref tag?
+    // Add a ref tag for the preserve keyword on custom elements
+    if (element.nodeType != 11) element.setAttribute("ref", registerElementReference(tag));
   }
   else if (isFragment) element = new DocumentFragment();
   else element = document.createElement(tag);
@@ -27,14 +28,17 @@ export function h(tag, attrs, children) {
       if (name == "children") continue;
       if (isCustom && !parseCustom.includes(name)) continue;
       let value = attrs[name];
-      element.setAttribute(name, (value === true) ? value : value.toString());
+      if (name == "style" && typeof value == "object") element.setAttribute(name, parseStyles(value));
+      //else if (name == "key") document.addEventListener("click", (e) => handleKeyEvent(e))
+      else element.setAttribute(name, (value === true) ? value : value.toString());
     }
   }
 
   if (!isCustom || isFragment) {
     for (let i = 2; i < arguments.length; i++) {
       let child = arguments[i];
-      element.appendChild(child.nodeType == null ? document.createTextNode(child.toString()) : child);
+      if (!child) child = document.createTextNode(`${child}`);
+      element.appendChild(child?.nodeType == null ? document.createTextNode(child.toString()) : child);
     }
   }
 
@@ -44,4 +48,15 @@ export function h(tag, attrs, children) {
 // TODO: Improve Fragments
 export function Fragment({ children }) {
   return children;
+}
+
+function parseStyles(style) {
+  let res = "";
+  for (const property in style) {
+    let cssProp = property.replace(/[A-Z][a-z]*/g, str => '-' + str.toLowerCase() + '-')
+      .replace('--', '-') // remove double hyphens
+      .replace(/(^-)|(-$)/g, ''); // remove hyphens at the beginning and the end
+    res += `${cssProp}: ${style[property]};`;
+  }
+  return res;
 }
