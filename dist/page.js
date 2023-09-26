@@ -58,9 +58,43 @@ function emit(event, data) {
  * @param {route} previousRoute 
  */
 export function render(route, previousRoute) {
+  const routeComponent = route.component.cloneNode(true);
   const children = Array.from(AppRoot.children);
-  if (children.length == 0) return AppRoot.append(route.component);
-  const newChildren = Array.from(route.component.children);
+  if (children.length == 0) return AppRoot.append(routeComponent.cloneNode(true));
+  // Get preserve items
+  let skip = [];
+  const newChildren = Array.from(routeComponent.children);
+  const preserveChildren = children.filter(e => e.getAttribute("preserve"));
+  preserveChildren.forEach(e => {
+    for (const ne of newChildren) {
+      if (e.isEqualNode(ne)) {
+        skip.push({
+          element: e,
+          index: newChildren.indexOf(ne)
+        });
+        break;
+      }
+    }
+  });
+
+  // Remove items
+  for (const child of children) {
+    const isPreserve = skip.find(e => e.element.isEqualNode(child));
+    if (isPreserve) continue;
+    AppRoot.removeChild(child);
+  }
+
+  // Add new items
+  let indices = skip.map(e => e.index);
+  newChildren.forEach((child, index) => {
+    const isPreserve = skip.find(e => e.element.isEqualNode(child));
+    const nextIndex = _closest(indices, index);
+    const nextItem = skip.find(e => e.index == nextIndex)?.element;
+    console.log(nextIndex, nextItem, child)
+    if (isPreserve) return;
+    if (nextIndex < index) return AppRoot.appendChild(child);
+    AppRoot.insertBefore(child, nextItem);
+  });
 }
 
 /**
@@ -88,4 +122,15 @@ function _buildPage(options) {
   if (body) contents.push(body);
 
   return h(Fragment, null, ...contents);
+}
+
+function _closest(arr, closestTo) {
+
+  var closest = Math.max.apply(null, arr); //Get the highest number in arr in case it match nothing.
+
+  for (var i = 0; i < arr.length; i++) { //Loop the array
+    if (arr[i] >= closestTo && arr[i] < closest) closest = arr[i]; //Check if it's higher than your number, but lower than your closest value
+  }
+
+  return closest; // return the value
 }

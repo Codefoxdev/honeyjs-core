@@ -11,7 +11,7 @@ export function h(tag, attrs, children) {
   let element = null;
   if (isCustom && !isFragment) {
     element = tag(attrs);
-    console.log(element);
+    //console.log(element);
     // check if it is a document fragment, else add ref tag?
   }
   else if (isFragment) element = new DocumentFragment();
