@@ -144,8 +144,6 @@ Router
 JSX runtime
 
 - Improve code structure and efficiency
-- Improve Fragment support
-- Improved framework support; also support `className` and `onClick` instead of only `class` and `onclick`
 
 Parser
 
@@ -153,7 +151,8 @@ Parser
 
 APP
 
-- Add app `preset`: sidebar, tabs, etc. For changing nav behaviour
+- Add app `preset`: mobile, web
+  - For changing behaiviour of the app
 - Add transitions: fade, same component
 - Support for scoped css with `@scope` rule and for importing a css file
 

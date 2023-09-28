@@ -1,54 +1,56 @@
-import { registerElementReference, handleKeyEvent } from "../dist/events";
+import { registerElementEventListener } from "../dist/events";
 
-const parseCustom = ["key", "ref", "preserve"];
-const skipAttributes = ["events"];
+const parseAttributes = ["key", "ref", "preserve"];
+const skipAttributes = ["children"];
 
-export function h(tag, attrs, children) {
-  let isCustom = (typeof tag == "function");
-  let isFragment = isCustom && tag.name == "Fragment";
-  if (!attrs) attrs = {}
+export function h(tag, attrs, ...children) {
+  const isFragment = tag.isFragment == true;
+  const isCustom = (typeof tag == "function") && !isFragment;
+  const isElement = !isFragment && !isCustom;
+
+  /** @type { null | Function | HTMLElement } */
+  let element = null;
+  attrs ??= {};
   attrs.children = children;
 
-  let element = null;
-  if (isCustom && !isFragment) {
-    element = tag(attrs);
-    // Add a ref tag for the preserve keyword on custom elements
-    if (element.nodeType != 11) element.setAttribute("ref", registerElementReference(tag));
-  }
-  else if (isFragment) element = new DocumentFragment();
-  else element = document.createElement(tag);
+  if (isElement) element = document.createElement(tag);
+  else if (isCustom) element = tag(attrs);
+  else if (isFragment) element = tag(attrs);
+  else console.error("Something went wrond while parsing the tag information");
 
-  if (!element) {
-    console.error("Tag is invalid, or custom Element returns null");
-    element = document.createElement("div");
-  }
+  if (!isFragment) {
+    for (let name in attrs) {
+      if (name && attrs.hasOwnProperty(name)) {
+        const value = attrs[name];
 
-  for (let name in attrs) {
-    if (name && attrs.hasOwnProperty(name)) {
-      if (name == "children") continue;
-      if (isCustom && !parseCustom.includes(name)) continue;
-      let value = attrs[name];
-      if (name == "style" && typeof value == "object") element.setAttribute(name, parseStyles(value));
-      //else if (name == "key") document.addEventListener("click", (e) => handleKeyEvent(e))
-      else element.setAttribute(name, (value === true) ? value : value.toString());
+        // Check if it should be parsed
+        if (skipAttributes.includes(name) || (isCustom && !parseAttributes.includes(name) && !isEvent(name))) continue;
+
+        // Parse attributes correctly
+        if (name == "style" && typeof value == "object") element.setAttribute(name, parseStyles(value));
+        else if (isEvent(name) && !isFragment) registerElementEventListener(element, name.replace("on", ""), value);
+        else element.setAttribute(parseProperty(name), (value === true) ? value : value.toString());
+      }
     }
   }
 
-  if (!isCustom || isFragment) {
+  if (!isCustom) {
     for (let i = 2; i < arguments.length; i++) {
       let child = arguments[i];
       if (!child) child = document.createTextNode(`${child}`);
-      element.appendChild(child?.nodeType == null ? document.createTextNode(child.toString()) : child);
+      if (!isFragment) element.appendChild(child?.nodeType == null ? document.createTextNode(child.toString()) : child);
     }
   }
 
   return element;
 }
 
-// TODO: Improve Fragments
-export function Fragment({ children }) {
-  return children;
+/** @param {object} attrs */
+export const Fragment = (attrs) => {
+  attrs.isFragment = true;
+  return attrs;
 }
+Fragment.isFragment = true;
 
 function parseStyles(style) {
   let res = "";
@@ -59,4 +61,14 @@ function parseStyles(style) {
     res += `${cssProp}: ${style[property]};`;
   }
   return res;
+}
+
+function parseProperty(property) {
+  if (property.toLowerCase() == "classname") return "class";
+  return property;
+}
+
+/** @param {string} property */
+function isEvent(property) {
+  return property.toLowerCase().startsWith("on");
 }

@@ -3,7 +3,6 @@
  */
 
 import { render } from "./page.js";
-import { registerEventListener } from "./events.js";
 import { h } from "../jsx-runtime/index.js";
 
 export let routes = [];
@@ -19,12 +18,11 @@ export function defineRoutes(routesConfig) {
 }
 
 export function A({ href, children }) {
-  const key = registerEventListener("click", (e) => {
+  const onclick = (e) => {
     e.preventDefault();
-    navigate(e.target.pathname);
-  })
-
-  return h("a", { key, href }, children);
+    navigate(href);
+  }
+  return h("a", { href, onclick }, children);
 }
 
 // HISTORY

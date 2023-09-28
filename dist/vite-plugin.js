@@ -20,7 +20,7 @@ export default function (options = {}) {
       esbuild: {
         jsxInject: `import { h, Fragment } from "ceramic-app/jsx-runtime";`,
         jsxFactory: "h",
-        jsxFragment: "Fragment",
+        jsxFragment: `Fragment`,
       },
     }),
     async ShouldTransformCachedModuleHook() { return true; },
@@ -28,7 +28,7 @@ export default function (options = {}) {
       if (!id.match(REGEX.extension)) return;
 
       // Transform if it is jsx/tsx
-      if (id.match(/\.(tsx|jsx)$/)) src = transformJSX(src, id);
+      // if (id.match(/\.(tsx|jsx)$/)) src = transformJSX(src, id);
 
       // Add HMRAccept to entry point if `options.addHMRAccept` == true
       if (options.addHMRAccept == true && (!HMRAcceptFile || id == HMRAcceptFile)) {

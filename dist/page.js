@@ -5,7 +5,6 @@
  */
 
 import { routes, getLocation } from "./router.js";
-import { generateElementRef } from "./events.js";
 import { Fragment, h } from "../jsx-runtime/index.js";
 
 /** @type {HTMLElement | null} */
@@ -58,9 +57,11 @@ function emit(event, data) {
  * @param {route} previousRoute 
  */
 export function render(route, previousRoute) {
-  const routeComponent = route.component.cloneNode(true);
+  const routeComponent = route.component;
   const children = Array.from(AppRoot.children);
-  if (children.length == 0) return AppRoot.append(routeComponent.cloneNode(true));
+  if (children.length == 0 && !routeComponent.isFragment) {
+    return AppRoot.append(routeComponent);
+  }
   // Get preserve items
   let skip = [];
   const newChildren = Array.from(routeComponent.children);
@@ -132,4 +133,8 @@ function _closest(arr, closestTo) {
   }
 
   return closest; // return the value
+}
+
+function _parseFragment(fragment) {
+
 }
