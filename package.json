@@ -10,6 +10,7 @@
     "spa"
   ],
   "type": "module",
+  "types": "./src/types.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/codefoxdev/ceramic-app.git"
@@ -19,10 +20,8 @@
   },
   "homepage": "https://github.com/codefoxdev/ceramic-app#readme",
   "exports": {
-    ".": "./dist/index.js",
-    "./events": "./dist/events.js",
-    "./transitions": "./dist/transitions.js",
-    "./plugin": "./dist/vite-plugin.js",
-    "./jsx-runtime": "./jsx-runtime/index.js"
+    ".": "./src/index.js",
+    "./plugin": "./src/vite-plugin.js",
+    "./jsx-runtime": "./src/jsx-runtime.js"
   }
 }

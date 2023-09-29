@@ -1,22 +1,23 @@
-/**
- * @typedef {import("./index.js").route} route
- */
-
-import { render } from "./page.js";
-import { h } from "../jsx-runtime/index.js";
+import { render } from "./app.js";
+import { h } from "../jsx-runtime.js";
 
 export let routes = [];
 let currentRoute = null;
 
+// TODO: Route validation
+
 /**
- * 
- * @param {Array<route>} routesConfig 
+ * @param {Array<Ceramic.route>} routesConfig
  */
 export function defineRoutes(routesConfig) {
   routes = routesConfig;
-  // TODO: Route validation
+  return routes;
 }
 
+/**
+ * @param {object} param0 
+ * @param {string} param0.href
+ */
 export function A({ href, children }) {
   const onclick = (e) => {
     e.preventDefault();
@@ -30,18 +31,32 @@ export function A({ href, children }) {
 let historyList = [window.location.pathname];
 let historyIndex = 0;
 
+/**
+ * Gets the current location (non reactive)
+ * @returns {string} The location in pathname format `/path/to/page`
+ */
 export const getLocation = () => historyList[historyIndex];
 
+/**
+ * Navigates back one page into history
+ */
 export function back() {
   historyIndex = Math.max(0, historyIndex - 1);
   _render(historyIndex);
 }
 
+/**
+ * Navigates forward one page (if possible) in history
+ */
 export function forward() {
   historyIndex = Math.min(historyList.length - 1, historyIndex - 1);
   _render(historyIndex);
 }
 
+/**
+ * Navigates to the provided `targetPath`
+ * @param {string} targetPath The location in pathname format `/path/to/page`
+ */
 export function navigate(targetPath) {
   if (historyIndex < historyList.length - 1) {
     historyList.length = historyIndex + 1;
@@ -50,6 +65,8 @@ export function navigate(targetPath) {
   historyIndex = historyList.length - 1;
   _render(historyIndex);
 }
+
+// HELPER FUNCTIONS
 
 function _render(index) {
   if (!historyList[index]) return false;

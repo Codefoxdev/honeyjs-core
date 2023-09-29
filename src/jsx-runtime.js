@@ -1,5 +1,3 @@
-import { registerElementEventListener } from "../dist/events";
-
 const parseAttributes = ["key", "ref", "preserve"];
 const skipAttributes = ["children"];
 
@@ -71,4 +69,18 @@ function parseProperty(property) {
 /** @param {string} property */
 function isEvent(property) {
   return property.toLowerCase().startsWith("on");
+}
+
+/**
+ * Registers an event listener of type `event` to `element` 
+ * @param {HTMLElement} element 
+ * @param {string} event 
+ * @param {Function} callback 
+ */
+export function registerElementEventListener(element, event, callback) {
+  element.addEventListener(event, (e) => {
+    e.preventDefault();
+    console.log(element, event);
+    callback(e)
+  });
 }

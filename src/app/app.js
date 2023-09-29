@@ -1,23 +1,17 @@
-/**
- * @typedef {import("./index.js").AppOptions} AppOptions
- * @typedef {import("./index.js").PageOptions} PageOptions
- * @typedef {import("./index.js").route} route
- */
-
+import { createNamespace } from "./events.js";
 import { routes, getLocation } from "./router.js";
-import { Fragment, h } from "../jsx-runtime/index.js";
 
 /** @type {HTMLElement | null} */
 let AppRoot = null;
 /** @type {AppOptions | null} */
 let AppOptions = null;
 let AppStarted = false;
-let AppEventListeners = [];
 
 /**
- * @param {AppOptions} options
+ * @param {Ceramic.AppOptions} options
  */
 export function CeramicApp(options) {
+  const events = createNamespace("app");
   AppRoot = options.root;
   AppOptions = options;
 
@@ -29,32 +23,21 @@ export function CeramicApp(options) {
       render(route, null);
       if (AppStarted == false) {
         AppStarted = true;
-        emit("appload");
+        events.emit("appload");
       }
     },
     /**
-     * @param { "urlchange" | "pageload" | "appload" } event 
+     * @param {Ceramic.event} event 
      * @param { (e: object) => void } callback 
      */
-    on: (event, callback) => {
-      AppEventListeners.push({
-        event: event,
-        callback: callback
-      });
-    }
+    on: (event, callback) => events.listen(event, callback),
+    events,
   }
 }
 
-// TODO: Add prevent default option
-function emit(event, data) {
-  const listeners = AppEventListeners.filter(e => e.event == event);
-  listeners.forEach(e => e.callback(data));
-}
-
 /**
- * 
- * @param {route} route 
- * @param {route} previousRoute 
+ * @param {Ceramic.route} route 
+ * @param {Ceramic.route} previousRoute 
  */
 export function render(route, previousRoute) {
   const routeComponent = route.component;
@@ -97,44 +80,10 @@ export function render(route, previousRoute) {
   });
 }
 
-/**
- * @param {PageOptions} options
- */
-export function CeramicPage(options) {
-  const page = _buildPage(options);
-  return page;
-}
-
-/**
- * @param {PageOptions} options
- */
-function _buildPage(options) {
-  let topbar = options.topbar;
-  let tabbar = options.tabbar;
-  let body = options.body;
-
-  if (topbar == null) topbar = AppOptions.defaults.topbar;
-  if (tabbar == null) tabbar = AppOptions.defaults.tabbar;
-
-  let contents = [];
-  if (topbar) contents.push(topbar);
-  if (tabbar) contents.push(tabbar);
-  if (body) contents.push(body);
-
-  return h(Fragment, null, ...contents);
-}
-
 function _closest(arr, closestTo) {
+  var closest = Math.max.apply(null, arr);
+  for (var i = 0; i < arr.length; i++)
+    if (arr[i] >= closestTo && arr[i] < closest) closest = arr[i];
 
-  var closest = Math.max.apply(null, arr); //Get the highest number in arr in case it match nothing.
-
-  for (var i = 0; i < arr.length; i++) { //Loop the array
-    if (arr[i] >= closestTo && arr[i] < closest) closest = arr[i]; //Check if it's higher than your number, but lower than your closest value
-  }
-
-  return closest; // return the value
-}
-
-function _parseFragment(fragment) {
-
+  return closest;
 }
