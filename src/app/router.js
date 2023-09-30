@@ -5,6 +5,7 @@ export let routes = [];
 let currentRoute = null;
 
 // TODO: Route validation
+// TODO: Wildcard support
 
 /**
  * @param {Array<Ceramic.route>} routesConfig
@@ -15,8 +16,17 @@ export function defineRoutes(routesConfig) {
 }
 
 /**
+ * Gets the corresponding route at the specified path
+ * @param {string} targetPath The location in pathname format `/path/to/page` or leave empty for current location
+ */
+export function getRoute(targetPath) {
+  targetPath ??= getLocation();
+  return routes.find(e => e.route == targetPath);
+}
+
+/**
  * @param {object} param0 
- * @param {string} param0.href
+ * @param {string} param0.href The location in pathname format `/path/to/page`
  */
 export function A({ href, children }) {
   const onclick = (e) => {

@@ -10,7 +10,7 @@
     "spa"
   ],
   "type": "module",
-  "types": "./src/types.d.ts",
+  "types": "./src/app/types.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/codefoxdev/ceramic-app.git"

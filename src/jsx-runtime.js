@@ -78,9 +78,5 @@ function isEvent(property) {
  * @param {Function} callback 
  */
 export function registerElementEventListener(element, event, callback) {
-  element.addEventListener(event, (e) => {
-    e.preventDefault();
-    console.log(element, event);
-    callback(e)
-  });
+  element.addEventListener(event, (e) => callback(e));
 }

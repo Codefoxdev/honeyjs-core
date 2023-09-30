@@ -152,9 +152,13 @@ Parser
 APP
 
 - Add app `preset`: mobile, web
-  - For changing behaiviour of the app
-- Add transitions: fade, same component
+  - For changing behaiviour of the app > What behaviour ?
 - Support for scoped css with `@scope` rule and for importing a css file
+- Better logging
+- Transitions
+  - Transition handler function, user can determine what transition to use based on the `from` and `to` parameters which define the current url and the target url
+  - Custom transitions,
+  - More presets
 
 Package
 
