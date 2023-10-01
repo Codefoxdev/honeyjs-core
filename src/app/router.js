@@ -1,4 +1,4 @@
-import { render } from "./app.js";
+import { render } from "./render.js";
 import { h } from "../jsx-runtime.js";
 
 export let routes = [];

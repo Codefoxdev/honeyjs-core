@@ -144,6 +144,11 @@ Router
 JSX runtime
 
 - Improve code structure and efficiency
+- Rewrite to support reactivity
+  - Fist create an modal representing the dom as an object, which is useful for observing reactive elements
+  - When rendering parse the modal
+  - When reactive value changes it should know exactly what element to edit
+  - It can also drop unneccesary event listeners that aren't used in the current context
 
 Parser
 
