@@ -23,6 +23,7 @@ export function CeramicApp(options) {
     render: () => {
       if (AppRoot == null) return console.error("Please specify an app root to render the pages");
       const route = getRoute();
+      console.log(route);
       render(route, null);
       if (!AppStarted) {
         AppStarted = true;

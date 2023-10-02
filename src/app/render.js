@@ -9,11 +9,16 @@ export function render(route, previousRoute) {
   const routeComponent = route.component;
   const children = Array.from(AppRoot.children);
   if (children.length == 0 && !routeComponent.isFragment) {
-    return AppRoot.append(routeComponent);
+    if (routeComponent instanceof HTMLElement) return AppRoot.append(routeComponent);
+    else if (Array.isArray(routeComponent)) routeComponent.forEach(e => AppRoot.append(e));
   }
   // Get preserve items
   let skip = [];
-  const newChildren = Array.from(routeComponent.children);
+  /** @type {Array} */
+  let newChildren = null;
+  if (routeComponent instanceof HTMLElement) newChildren = [routeComponent];
+  else if (Array.isArray(routeComponent)) newChildren = routeComponent;
+
   const preserveChildren = children.filter(e => e.getAttribute("preserve"));
   preserveChildren.forEach(e => {
     for (const ne of newChildren) {
@@ -45,6 +50,18 @@ export function render(route, previousRoute) {
     if (nextIndex < index) return AppRoot.appendChild(child);
     AppRoot.insertBefore(child, nextItem);
   });
+}
+
+// TODO: Add event listeren class to drop eventlisteners when they are out of scope
+
+/**
+ * Registers an event listener of type `event` to `element`
+ * @param {HTMLElement} element
+ * @param {string} event
+ * @param {Function} callback
+ */
+function registerElementEventListener(element, event, callback) {
+  element.addEventListener(event, (e) => callback(e));
 }
 
 function _closest(arr, closestTo) {

@@ -149,6 +149,7 @@ JSX runtime
   - When rendering parse the modal
   - When reactive value changes it should know exactly what element to edit
   - It can also drop unneccesary event listeners that aren't used in the current context
+- Add a custom global event listener class that can drop event listeners when they are out of scope of the page
 
 Parser
 
