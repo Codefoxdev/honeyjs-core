@@ -166,7 +166,7 @@ APP
   - Transition handler function, user can determine what transition to use based on the `from` and `to` parameters which define the current url and the target url
   - Custom transitions,
   - More presets
-  - Two wrappers (maybe non-fysical) that can be animated, etc.
+  - Fix navigating to same route; currently it flashes
 
 Package
 
