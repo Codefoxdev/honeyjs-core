@@ -160,21 +160,15 @@ APP
 - Add app `preset`: mobile, web
   - For changing behaiviour of the app > What behaviour ?
 - Support for scoped css with `@scope` rule and for importing a css file
+  - Also ability to inject css specific for ceramic
 - Better logging
 - Transitions
   - Transition handler function, user can determine what transition to use based on the `from` and `to` parameters which define the current url and the target url
   - Custom transitions,
   - More presets
+  - Two wrappers (maybe non-fysical) that can be animated, etc.
 
 Package
 
-- Create a better name, `fluide` maybe?
+- Create a better name, `@fibres/core` maybe?
 - Update docs
-
-## Reactivity strategy
-
-```jsx
-const [count, setCount] = hookFunction(initialvalue);
-```
-
-return a reference to the hook on `count.ref`, while count can still be a string, or integer, or array, etc.

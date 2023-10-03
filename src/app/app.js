@@ -1,6 +1,7 @@
 import { render } from "./render.js";
 import { createNamespace } from "./events.js";
 import { getRoute } from "./router.js";
+import { injectCSS } from "./styles.js";
 
 /** @type {HTMLElement | null} */
 export let AppRoot = null;
@@ -23,7 +24,7 @@ export function CeramicApp(options) {
     render: () => {
       if (AppRoot == null) return console.error("Please specify an app root to render the pages");
       const route = getRoute();
-      console.log(route);
+      injectCSS(AppRoot);
       render(route, null);
       if (!AppStarted) {
         AppStarted = true;
