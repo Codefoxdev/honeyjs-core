@@ -68,6 +68,7 @@ export function forward() {
  * @param {string} targetPath The location in pathname format `/path/to/page`
  */
 export function navigate(targetPath) {
+  if (targetPath == getLocation()) return;
   if (historyIndex < historyList.length - 1) {
     historyList.length = historyIndex + 1;
   }

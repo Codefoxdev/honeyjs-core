@@ -20,8 +20,23 @@
  *  @typedef {"load" | "navigate" | "render"} Ceramic.event
  * 
  *  @typedef {{
+ *    keyframes: Ceramic.transitions.keyframes,
+ *    options: Ceramic.transitions.options,
+ *  }} Ceramic.transition
+ * 
+ *  @typedef {"fade" | "transform" | Ceramic.transitions.keyframeData} Ceramic.transitions.keyframes
+ * 
+ *    @typedef {{
+ *       previous: Array<object>,
+ *       next: Array<object>
+ *    }} Ceramic.transitions.keyframeData
+ * 
+ *  @typedef {{
+ *    delay: number,
+ *    direction: "normal" | "reverse" | "alternate" | "alternate-reverse"
  *    duration: number,
  *    easing: string,
- *    preset: "fade" | "transform"
- *  }} Ceramic.transition
+ *    fill: "backwards" | "forwards" | "none",
+ *    iterations: number
+ *  }} Ceramic.transitions.options
  */

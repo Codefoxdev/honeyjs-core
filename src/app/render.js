@@ -1,4 +1,4 @@
-import { AppRoot } from "./app.js";
+import { AppRoot, AppOptions } from "./app.js";
 
 /**
  * @param {Ceramic.route} route 
@@ -39,17 +39,20 @@ export function render(route, previousRoute) {
   // Remove items or add transition
   for (const child of children) {
     const isPreserve = skip.find(e => e.element.isEqualNode(child));
-    if (isPreserve) continue;
-
-    //AppRoot.removeChild(child);
+    // Create filler element
+    if (isPreserve) {
+      oldWrapper.appendChild(createFiller(child));
+      continue;
+    }
     oldWrapper.appendChild(child);
   }
 
-  oldWrapper.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: "ease", fill: "forwards" });
+  const transition = AppOptions.config.transition;
+  oldWrapper.animate(transition.keyframes.previous, transition.options);
 
   setTimeout(() => {
     AppRoot.removeChild(oldWrapper);
-  }, 200);
+  }, transition.options.duration);
 
   const newWrapper = document.createElement("div");
   newWrapper.setAttribute("wrapper", "transition");
@@ -59,11 +62,11 @@ export function render(route, previousRoute) {
   // Add new items    - create
   newChildren.forEach((child, index) => {
     const isPreserve = skip.find(e => e.element.isEqualNode(child));
-    if (isPreserve) return;
+    if (isPreserve) return newWrapper.appendChild(createFiller(isPreserve.element));
     newWrapper.appendChild(child);
   });
 
-  newWrapper.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, easing: "ease", fill: "forwards" });
+  newWrapper.animate(transition.keyframes.next, transition.options);
 
   // Add new items    - To body change after transitin
   let indices = skip.map(e => e.index);
@@ -77,10 +80,23 @@ export function render(route, previousRoute) {
       AppRoot.insertBefore(child, nextItem);
     });
     AppRoot.removeChild(newWrapper);
-  }, 200);
+  }, transition.options.duration);
 }
 
-// TODO: Add event listeren class to drop eventlisteners when they are out of scope
+/**
+ * @param {HTMLElement} element 
+ * @returns {HTMLDivElement}
+ */
+function createFiller(element) {
+  const filler = document.createElement("div");
+  const size = element.getBoundingClientRect();
+  filler.setAttribute("filler", "");
+  filler.style.width = `${size.width}px`;
+  filler.style.height = `${size.height}px`;
+  return filler;
+}
+
+// TODO: Add event listener class to drop eventlisteners when they are out of scope
 
 /**
  * Registers an event listener of type `event` to `element`

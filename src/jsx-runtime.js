@@ -36,7 +36,6 @@ export function h(tag, attrs, ...children) {
         if (typeof child == "function") {
           let lastChild;
           createEffect(() => {
-            console.log(lastChild)
             if (lastChild) element.removeChild(lastChild);
             let newChild = child()
             if (newChild == null || newChild == undefined) return lastChild = null;

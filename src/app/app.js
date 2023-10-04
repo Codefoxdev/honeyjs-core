@@ -6,7 +6,7 @@ import { injectCSS } from "./styles.js";
 /** @type {HTMLElement | null} */
 export let AppRoot = null;
 /** @type {Ceramic.AppOptions | null} */
-let AppOptions = null;
+export let AppOptions = null;
 let AppStarted = false;
 
 /**
@@ -18,6 +18,7 @@ export function CeramicApp(options) {
   AppOptions = options;
 
   return {
+    // METHODS
     /**
      * Responsible for rendering the page at the initial page load
      */
@@ -36,7 +37,10 @@ export function CeramicApp(options) {
      * @param {(e: object) => void} callback 
      */
     on: (event, callback) => events.listen(event, callback),
+
+    // VALUES
     events,
+    environment: import.meta.env.MODE ?? "production",
   }
 }
 
