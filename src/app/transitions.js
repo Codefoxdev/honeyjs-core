@@ -1,3 +1,5 @@
+import { Logger } from "../tools/logger.js";
+
 const presetData = {
   transform: {
     keyframes: {
@@ -25,6 +27,8 @@ const presetData = {
   },
 }
 
+const logger = new Logger("transitions");
+
 const defaults = {
   delay: 0,
   direction: "normal",
@@ -36,8 +40,8 @@ const defaults = {
 
 export class Transition {
   /**
-   * @param {Ceramic.transitions.keyframes} keyframes
-   * @param {Ceramic.transitions.options} options
+   * @param {Ceramic.transition.keyframes} keyframes
+   * @param {Ceramic.transition.options} options
    */
   constructor(keyframes, options) {
     this.options = {}
@@ -57,6 +61,6 @@ export class Transition {
 function isPreset(preset) {
   const data = presetData[preset].keyframes;
   if (data) return data;
-  console.warn(`Preset: ${preset}, not found falling back to the 'fade' preset`);
+  logger.warn(`Preset: ${preset}, not found falling back to the 'fade' preset`);
   return presetData.fade.keyframes;
 }

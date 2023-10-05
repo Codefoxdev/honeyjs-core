@@ -1,7 +1,13 @@
 import { render } from "./render.js";
-import { createNamespace } from "./events.js";
 import { getRoute } from "./router.js";
 import { injectCSS } from "./styles.js";
+
+// TOOLS
+import { Logger } from "../tools/logger.js";
+import { createNamespace, listen as events_listen } from "../tools/events.js";
+
+const logger = new Logger("app");
+const events = createNamespace("app");
 
 /** @type {HTMLElement | null} */
 export let AppRoot = null;
@@ -13,7 +19,7 @@ let AppStarted = false;
  * @param {Ceramic.AppOptions} options
  */
 export function CeramicApp(options) {
-  const events = createNamespace("app");
+  logger.log("initializing...");
   AppRoot = options.root;
   AppOptions = options;
 
@@ -23,20 +29,19 @@ export function CeramicApp(options) {
      * Responsible for rendering the page at the initial page load
      */
     render: () => {
-      if (AppRoot == null) return console.error("Please specify an app root to render the pages");
+      if (AppRoot == null && !tryDefaultRoot()) return logger.error("app root not specified");
       const route = getRoute();
-      injectCSS(AppRoot);
-      render(route, null);
-      if (!AppStarted) {
-        AppStarted = true;
-        events.emit("load");
+      const res = events.emit("load", {}, true, false);
+      if (res) {
+        injectCSS(AppRoot);
+        render(route, null);
+        logger.log("app loaded successfully");
+        if (!AppStarted) {
+          AppStarted = true;
+        }
       }
     },
-    /**
-     * @param {Ceramic.event} event 
-     * @param {(e: object) => void} callback 
-     */
-    on: (event, callback) => events.listen(event, callback),
+    on: events_listen,
 
     // VALUES
     events,
@@ -44,65 +49,10 @@ export function CeramicApp(options) {
   }
 }
 
-/*
-const bounding = child.getBoundingClientRect();
-child.setAttribute("transition", "out");
-
-child.style.top = `${bounding.top}px`;
-child.style.left = `${bounding.left}px`;
-setTimeout(() => {
-  child.style.position = "absolute";
-}, 0);
-
-child.animate(
-  [
-    { transform: "translate(0px)" },
-    { transform: "translate(110vw)" }
-  ],
-  {
-    duration: AppOptions.config.transition.duration,
-    easing: "ease"
-  }
-)
-
-setTimeout(() => {
-  AppRoot.removeChild(child);
-}, AppOptions.config.transition.duration);
-*/
-
-/*
-const bounding = child.getBoundingClientRect();
-child.setAttribute("transition", "in");
-
-child.style.top = `${bounding.top}px`;
-child.style.left = `${bounding.left}px`;
-setTimeout(() => {
-  child.style.position = "absolute";
-}, 0);
-
-child.animate(
-  [
-    { transform: "translate(-110vw)" },
-    { transform: "translate(0px)" }
-  ],
-  {
-    duration: AppOptions.config.transition.duration,
-    easing: "ease"
-  }
-)
-
-setTimeout(() => {
-  child.style.position = "";
-  child.removeAttribute("transition");
-}, AppOptions.config.transition.duration);
-*/
-
-/**
- * Registers an event listener of type `event` to `element`
- * @param {HTMLElement} element
- * @param {string} event
- * @param {Function} callback
- */
-//export function registerElementEventListener(element, event, callback) {
-//  element.addEventListener(event, (e) => callback(e));
-//}
+function tryDefaultRoot() {
+  const fallback = document.querySelector("#app");
+  if (!fallback) return false;
+  logger.warn("app root not speficied falling back to", fallback);
+  AppRoot = AppOptions.root = fallback;
+  return true;
+}

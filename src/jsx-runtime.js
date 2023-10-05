@@ -1,4 +1,7 @@
 import { createEffect } from "./app/reactivity.js";
+import { Logger } from "./tools/logger.js";
+
+const logger = new Logger("JSX runtime");
 
 const parseCustom = ["key", "ref", "preserve"];
 const skipCustom = ["children"];
@@ -25,7 +28,7 @@ export function h(tag, attrs, ...children) {
     const data = tag(attrs);
     element = data.children ?? data;
   }
-  else console.error("Something went wrong while parsing the tag information");
+  else logger.error("Something went wrong while parsing the tag information");
 
   if (!isFragment) parseAttributes(element, attrs, isCustom);
 
@@ -98,7 +101,7 @@ function parseStyles(element, style) {
       .replace(/(^-)|(-$)/g, ''); // remove hyphens at the beginning and the end
     if (typeof style[property] == "string" || typeof style[property] == "number") element.style[cssProp] = style[property];
     else if (typeof style[property] == "function") createEffect(() => element.style[cssProp] = style[property]());
-    else console.log(style[property]);
+    else logger.log(style[property]);
   }
   return res;
 }

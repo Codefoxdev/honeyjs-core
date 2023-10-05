@@ -1,6 +1,13 @@
 import { render } from "./render.js";
 import { h } from "../jsx-runtime.js";
 
+// TOOLS
+import { Logger } from "../tools/logger.js";
+import { createNamespace, listen as events_listen } from "../tools/events.js";
+
+const logger = new Logger("router");
+const events = createNamespace("router");
+
 export let routes = [];
 let currentRoute = null;
 
@@ -52,7 +59,12 @@ export const getLocation = () => historyList[historyIndex];
  */
 export function back() {
   historyIndex = Math.max(0, historyIndex - 1);
-  _render(historyIndex);
+  const res = events.emit("back", {
+    current: getLocation(),
+    target: historyList[historyIndex],
+    history: historyList
+  }, true);
+  if (res != false) _render(historyIndex);
 }
 
 /**
@@ -60,7 +72,12 @@ export function back() {
  */
 export function forward() {
   historyIndex = Math.min(historyList.length - 1, historyIndex - 1);
-  _render(historyIndex);
+  const res = events.emit("forward", {
+    current: getLocation(),
+    target: historyList[historyIndex],
+    history: historyList
+  }, true);
+  if (res != false) _render(historyIndex);
 }
 
 /**
@@ -72,9 +89,17 @@ export function navigate(targetPath) {
   if (historyIndex < historyList.length - 1) {
     historyList.length = historyIndex + 1;
   }
-  historyList.push(targetPath);
-  historyIndex = historyList.length - 1;
-  _render(historyIndex);
+  const res = events.emit("navigate", {
+    current: getLocation(),
+    target: targetPath,
+    history: historyList
+  }, true);
+
+  if (res != false) {
+    historyList.push(targetPath);
+    historyIndex = historyList.length - 1;
+    _render(historyIndex);
+  };
 }
 
 // HELPER FUNCTIONS

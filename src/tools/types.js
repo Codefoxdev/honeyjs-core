@@ -17,19 +17,25 @@
  *    component: Function | HTMLElement;
  *  }} Ceramic.route
  * 
- *  @typedef {"load" | "navigate" | "render"} Ceramic.event
+ *  @typedef {"load" | "navigate" | "back" | "forward"} Ceramic.event.name
+ * 
+ *  @typedef {(e: {
+ *    cancelable: boolean,
+ *    preventDefault: () => void,
+ *    defaultPrevented: boolean
+ *  }) => false | any} Ceramic.event.callback
  * 
  *  @typedef {{
- *    keyframes: Ceramic.transitions.keyframes,
- *    options: Ceramic.transitions.options,
+ *    keyframes: Ceramic.transition.keyframes,
+ *    options: Ceramic.transition.options,
  *  }} Ceramic.transition
  * 
- *  @typedef {"fade" | "transform" | Ceramic.transitions.keyframeData} Ceramic.transitions.keyframes
+ *  @typedef {"fade" | "transform" | Ceramic.transition.keyframeData} Ceramic.transition.keyframes
  * 
- *    @typedef {{
- *       previous: Array<object>,
- *       next: Array<object>
- *    }} Ceramic.transitions.keyframeData
+ *  @typedef {{
+ *     previous: Array<object>,
+ *     next: Array<object>
+ *  }} Ceramic.transition.keyframeData
  * 
  *  @typedef {{
  *    delay: number,
@@ -38,5 +44,5 @@
  *    easing: string,
  *    fill: "backwards" | "forwards" | "none",
  *    iterations: number
- *  }} Ceramic.transitions.options
+ *  }} Ceramic.transition.options
  */
