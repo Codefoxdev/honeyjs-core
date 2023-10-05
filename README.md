@@ -5,15 +5,22 @@ It requires no (except for vite) external dependencies and is incredibly fast.
 
 THIS TOOL IS IN VERY EARLY STAGES AND SHOUDN'T BE USED IN A PRODUCTION APP YET
 
-## How does it work
-
 ### App
 
-The entry point of your application is the `CeramicApp` function
+The entry point of your application is the `CeramicApp` function, here you can configure everything about it.
+As of writing this, the only functional configuration is for the page transition.
+You can create a new transitions with a preset, or make all the keyframes yourself, the syntax is the same as the native element.animate function.
 
 ```jsx
 const App = CeramicApp({
-  root: document.querySelector(".app"),
+  root: document.querySelector("#app"),
+  config: {
+    transition: new Transition("fade", {
+      duration: 200,
+      easing: "ease",
+      fill: "forwards",
+    }),
+  },
 });
 ```
 
@@ -24,42 +31,46 @@ App.render();
 ```
 
 This will render the page provided at the current pathname, see [routing](#routing) for more info.
-The App object also provides a way to listen to events
+Some more properties on app include:
+
+- `App.environment` wich will return `development` when using `vite` or `vite dev`, and production when your project has been builded.
+
+### Events
 
 ```jsx
-App.on("appload", (e) => { ... });
+App.on("load", (e) => { ... });
 ```
 
-When building a mobile application this can be helpfull to hide the splashscreen at the right time.
-But make sure to register the `appload` event before calling the `render` function, otherwise it won't be called
+Using the `App.on` function you can register an event listener on the app, the callback will then be fired when that event happens.
+So for example when you register a navigate event listener, it will fire right before the navigation happens, and the event parameter keeps all the data about the event.
+As well as a `event.preventDefault()` function, which will stop the event and its reponses when it is called,
+the event also contains some other values like `event.defaultPrevented` and `event.cancelable`.
 
 ### Pages
 
-The syntax is a bit inspired by a flutter app, this is what a page will probably look like
+This is what a sample page will look like:
 
 ```jsx
-import { CeramicPage } from "ceramic-app";
-
-export default CeramicPage({
-  navbar: <Navbar />,
-  body: (
+export default function () {
+  return (
     <>
       <h1>Hello,</h1>
-      <h1>World</h1>
+      <p>world</p>
     </>
-  ),
-});
+  );
+}
 ```
 
-Now the exported value contains all the necessary information for ceramic to render it.
-At the moment you can only render it with the builtin router, but this will change in the future
+However components also have some special properties, like the `preserve` keyword.
+When you switch between pages and you have the same element on both pages with a `preserve` keyword, that element will not transition, it will be left untouched.
+This is helpfull when you transition between pages, but you want the navbar to stay the same.
 
 ### Routing
 
 NOTE: Routing isn't finalized yet, so it will experience a lot of changes in the future
 Routes are defined by calling the `defineRoutes` function, which looks something like this
 
-```js
+```jsx
 import { defineRoutes } from "ceramic-app";
 
 import Home from "./pages/home";
@@ -69,12 +80,12 @@ export default defineRoutes([
   {
     name: "home",
     route: "/",
-    page: Home,
+    component: <Home />,
   },
   {
     name: "about",
     route: "/about",
-    page: About,
+    component: <About />,
   },
 ]);
 ```
@@ -83,53 +94,50 @@ export default defineRoutes([
 
 Ceramic uses vite's (or esbuild's) builtin jsx transformer alongside a custom jsx parser that transforms it into h functions,
 which get parsed to native HTML elements by `ceramic/jsx-parser`.
-The vite config gets automatically updated once `ceramic/plugin` is used.
+The vite config gets automatically updated once `ceramic/plugin` is used, however it isn't necessary.
+The plugin just adds a Hot Module Replacement accept into the main file, wich can be toggled by changing the `addHMRAccept` property of the first parameter, which will look like this
 
 ```js
 import { defineConfig } from "vite";
 import ceramic from "ceramic-app/plugin";
 
 export default defineConfig({
-  plugins: [ceramic()],
+  plugins: [ceramic({ addHMRAccept: true })],
 });
 ```
 
-NOTE: when a function returns a Fragment, it will be transformed into a native [documentFragment](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment).
-Please make sure to read the documentation for this, as it can act a bit strange sometimes
+### Reactivity
 
-### Parser
+Ceramic also exposes some methods for reactivity, which are heavily inspired by solid.js
 
-For the parsing off the jsx itself ceramic relies on vite's (or esbuild) builtin jsx parser,
-but ceramic does have a custom parser for on\* event parameters (onclick, etc.) in jsx, as vite just puts the function source as the parameter.
-This is what a transformation might look like:
-
-```jsx
-...
-export function ClickableButton() {
-  return (
-    <button class="logo" onclick={back}>
-      <IconButton icon="chevron_left" />
-    </button>
-  );
-}
-...
+```js
+const [count, setCount] = createSignal(0);
 ```
 
-Gets transformed to something like this
+A signal is a reactive variable, you can change it by calling `setCount(1)`, wich will change count to 1.
 
-```jsx
-import { registerEventListener as __key_registerEventListener } from "ceramic-app/events";
-const __key_click_1476ea87be4e1 = __key_registerEventListener("click", back);
-...
-export function ClickableButton() {
-  return (
-    <button class="logo" key={__key_click_1476ea87be4e1}>
-      <IconButton icon="chevron_left" />
-    </button>
-  );
-}
-...
+```js
+createEffect(() => {
+  console.log(`count was changed to: ${count()}`);
+});
 ```
 
-Now Ceramic takes it over and registers the required eventlisteners and calls the provided callbacks accordingly.
-At the moment only default behaviour (as shown above) is supported, more customization options might come in the future.
+An effect is a function that gets called whenever a reactive value used in the effect changes, so when `setCount` is called and it isn't the same value, every effect that uses `count()` will be called.
+
+```js
+const getUsers = createMemo((id) => {
+  users.find((e) => e.id == id);
+});
+```
+
+The last method is a memoization function wich when called remembers wich output belongs to wich input.
+A memoization function is basically a form of caching, wich will improve performance when calling lots of methods multiple times.
+
+NOTE:
+One drawback is that when using the reactive value in jsx, you have to pass it as a function
+
+```jsx
+<p>count: {count()}</p>         // Won't update the value
+<p>count: {() => count()}</p>   // Will update
+<p>count: {count}</p>           // This also works
+```
