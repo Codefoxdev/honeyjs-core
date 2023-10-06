@@ -106,12 +106,12 @@ export function navigate(targetPath) {
 
 function _render(index) {
   if (!historyList[index]) return false;
-  const item = historyList[index];
+  const newRoute = routes.find(e => e.route == historyList[index]);
 
   render(
-    routes.find(e => e.route == item),
+    newRoute,
     currentRoute
   );
-  history.pushState({}, "", item);
-  currentRoute = item;
+  history.pushState({}, "", historyList[index]);
+  currentRoute = newRoute;
 }

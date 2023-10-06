@@ -26,7 +26,7 @@
  *  }) => false | any} Ceramic.event.callback
  * 
  *  @typedef {{
- *    keyframes: Ceramic.transition.keyframes,
+ *    keyframes: Ceramic.transition.keyframes | Ceramic.transition.handler,
  *    options: Ceramic.transition.options,
  *  }} Ceramic.transition
  * 
@@ -45,4 +45,10 @@
  *    fill: "backwards" | "forwards" | "none",
  *    iterations: number
  *  }} Ceramic.transition.options
+ * 
+ *  @typedef {(data: {
+ *    previous: string,
+ *    next: string,
+ *    defaultTransition: Ceramic.transition
+ *  }) => Array} Ceramic.transition.handler
  */

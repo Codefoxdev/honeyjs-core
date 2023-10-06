@@ -40,7 +40,7 @@ const defaults = {
 
 export class Transition {
   /**
-   * @param {Ceramic.transition.keyframes} keyframes
+   * @param {Ceramic.transition.handler | Ceramic.transition.keyframes} keyframes
    * @param {Ceramic.transition.options} options
    */
   constructor(keyframes, options) {
@@ -59,6 +59,7 @@ export class Transition {
 
 // TODO: Add support for custom presets
 function isPreset(preset) {
+  if (typeof preset == "function") return false;
   const data = presetData[preset].keyframes;
   if (data) return data;
   logger.warn(`Preset: ${preset}, not found falling back to the 'fade' preset`);

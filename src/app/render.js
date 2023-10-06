@@ -48,7 +48,10 @@ export function render(route, previousRoute) {
   }
 
   const transition = AppOptions.config.transition;
-  oldWrapper.animate(transition.keyframes.previous, transition.options);
+  let keyframes = transition.keyframes;
+  if (typeof keyframes == "function") keyframes = keyframes({ next: route.name, previous: previousRoute?.name });
+  console.log(transition);
+  oldWrapper.animate(keyframes.previous, transition.options);
 
   setTimeout(() => {
     AppRoot.removeChild(oldWrapper);
@@ -66,7 +69,7 @@ export function render(route, previousRoute) {
     newWrapper.appendChild(child);
   });
 
-  newWrapper.animate(transition.keyframes.next, transition.options);
+  newWrapper.animate(keyframes.next, transition.options);
 
   // Add new items    - To body change after transitin
   let indices = skip.map(e => e.index);
