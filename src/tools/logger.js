@@ -1,4 +1,4 @@
-const globalPrefix = "ceramic";
+const globalPrefix = "honey";
 
 export class Logger {
   constructor(alias) {

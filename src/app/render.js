@@ -1,8 +1,8 @@
 import { AppRoot, AppOptions } from "./app.js";
 
 /**
- * @param {Ceramic.route} route 
- * @param {Ceramic.route} previousRoute 
+ * @param {Honey.route} route 
+ * @param {Honey.route} previousRoute 
  */
 export function render(route, previousRoute) {
   const routeComponent = route.component;

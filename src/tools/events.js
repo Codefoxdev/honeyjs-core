@@ -75,8 +75,8 @@ export function emit(eventKey, data = {}, emitGlobal = false, cancelable = true)
 }
 
 /**
- * @param {Ceramic.event.name} eventKey The event key in the form `namespace:event` or if the namespace is missing in the global namespace
- * @param {Ceramic.event.callback} callback 
+ * @param {Honey.event.name} eventKey The event key in the form `namespace:event` or if the namespace is missing in the global namespace
+ * @param {Honey.event.callback} callback 
  */
 export function listen(eventKey, callback) {
   if (!eventKey.includes(":") || eventKey.split(":")[0] == "global")

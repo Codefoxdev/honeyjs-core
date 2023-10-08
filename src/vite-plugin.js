@@ -13,12 +13,12 @@ export default function (options = {}) {
   let HMRAcceptFile = null;
 
   return {
-    name: "vite-plugin-ceramic",
+    name: "vite-plugin-honeyjs",
     enforce: "pre",
 
     config: () => ({
       esbuild: {
-        jsxInject: `import { h, Fragment } from "ceramic-app/jsx-runtime";`,
+        jsxInject: `import { h, Fragment } from "@honeyjs/core/jsx-runtime";`,
         jsxFactory: "h",
         jsxFragment: `Fragment`,
       },
@@ -42,26 +42,4 @@ export default function (options = {}) {
       }
     }
   }
-}
-
-/**
- * @param {string} src 
- * @param {string} id 
- */
-function transformJSX(src, id) {
-  let matches = [...src.matchAll(REGEX.onEvent)];
-  let vars = [];
-  // FIXME: multiple events not working
-  for (const match of matches) {
-    const varName = `__key_${match[1].toLowerCase()}_${Math.random().toString(16).slice(2)}`;
-    const injections = [
-      `const ${varName} = __key_registerEventListener("${match[1].toLowerCase()}", ${match[2]});`,
-      src.substring(0, match.index),
-      `key={${varName}}`,
-      src.substring(match.index + match[0].length, src.length)
-    ]
-    src = injections.join("");
-  }
-
-  return `import { registerEventListener as __key_registerEventListener } from "ceramic-app/events";` + src;
 }

@@ -15,7 +15,7 @@ let currentRoute = null;
 // TODO: Wildcard support
 
 /**
- * @param {Array<Ceramic.route>} routesConfig
+ * @param {Array<Honey.route>} routesConfig
  */
 export function defineRoutes(routesConfig) {
   routes = routesConfig;

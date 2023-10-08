@@ -40,8 +40,8 @@ const defaults = {
 
 export class Transition {
   /**
-   * @param {Ceramic.transition.handler | Ceramic.transition.keyframes} keyframes
-   * @param {Ceramic.transition.options} options
+   * @param {Honey.transition.handler | Honey.transition.keyframes} keyframes
+   * @param {Honey.transition.options} options
    */
   constructor(keyframes, options) {
     this.options = {}

@@ -1,7 +1,7 @@
 {
-  "name": "ceramic-app",
+  "name": "@honeyjs/core",
   "version": "0.2.0",
-  "description": "Ceramic is a tool to help build (mobile) applications with vite and jsx",
+  "description": "Honey is a tool to help build (mobile) applications with vite and jsx",
   "author": "Codefoxdev",
   "license": "MIT",
   "keywords": [
@@ -13,12 +13,13 @@
   "types": "./src/app/types.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/codefoxdev/ceramic-app.git"
+    "url": "git+https://github.com/codefoxdev/honeyjs-core.git"
   },
   "bugs": {
-    "url": "https://github.com/codefoxdev/ceramic-app/issues"
+    "url": "https://github.com/codefoxdev/honeyjs-core/issues"
   },
-  "homepage": "https://github.com/codefoxdev/ceramic-app#readme",
+  "homepage": "https://github.com/codefoxdev/honeyjs-core#readme",
+  "main": "./src/index.js",
   "exports": {
     ".": "./src/index.js",
     "./plugin": "./src/vite-plugin.js",

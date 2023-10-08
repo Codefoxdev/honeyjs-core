@@ -1,5 +1,5 @@
 /**
- *  @module 'Ceramic'
+ *  @module 'Honey'
  * 
  *  @typedef {{
  *    root: HTMLElement;
@@ -7,35 +7,35 @@
  *    config: {
  *      appBar: HTMLElement | Function;
  *      appBarLinks: Array<string>;
- *      transition: Ceramic.transition
+ *      transition: Honey.transition
  *    };
- *  }} Ceramic.AppOptions
+ *  }} Honey.AppOptions
  * 
  *  @typedef {{
  *    name: string; 
  *    route: string; 
  *    component: Function | HTMLElement;
- *  }} Ceramic.route
+ *  }} Honey.route
  * 
- *  @typedef {"load" | "navigate" | "back" | "forward"} Ceramic.event.name
+ *  @typedef {"load" | "navigate" | "back" | "forward"} Honey.event.name
  * 
  *  @typedef {(e: {
  *    cancelable: boolean,
  *    preventDefault: () => void,
  *    defaultPrevented: boolean
- *  }) => false | any} Ceramic.event.callback
+ *  }) => false | any} Honey.event.callback
  * 
  *  @typedef {{
- *    keyframes: Ceramic.transition.keyframes | Ceramic.transition.handler,
- *    options: Ceramic.transition.options,
- *  }} Ceramic.transition
+ *    keyframes: Honey.transition.keyframes | Honey.transition.handler,
+ *    options: Honey.transition.options,
+ *  }} Honey.transition
  * 
- *  @typedef {"fade" | "transform" | Ceramic.transition.keyframeData} Ceramic.transition.keyframes
+ *  @typedef {"fade" | "transform" | Honey.transition.keyframeData} Honey.transition.keyframes
  * 
  *  @typedef {{
  *     previous: Array<object>,
  *     next: Array<object>
- *  }} Ceramic.transition.keyframeData
+ *  }} Honey.transition.keyframeData
  * 
  *  @typedef {{
  *    delay: number,
@@ -44,11 +44,11 @@
  *    easing: string,
  *    fill: "backwards" | "forwards" | "none",
  *    iterations: number
- *  }} Ceramic.transition.options
+ *  }} Honey.transition.options
  * 
  *  @typedef {(data: {
  *    previous: string,
  *    next: string,
- *    defaultTransition: Ceramic.transition
- *  }) => Array} Ceramic.transition.handler
+ *    defaultTransition: Honey.transition
+ *  }) => Array} Honey.transition.handler
  */

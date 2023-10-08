@@ -11,14 +11,14 @@ const events = createNamespace("app");
 
 /** @type {HTMLElement | null} */
 export let AppRoot = null;
-/** @type {Ceramic.AppOptions | null} */
+/** @type {Honey.AppOptions | null} */
 export let AppOptions = null;
 let AppStarted = false;
 
 /**
- * @param {Ceramic.AppOptions} options
+ * @param {Honey.AppOptions} options
  */
-export function CeramicApp(options) {
+export function HoneyApp(options) {
   logger.log("initializing...");
   AppRoot = options.root;
   AppOptions = options;

@@ -1,18 +1,18 @@
-# Ceramic
+# Honeyjs
 
-Ceramic is a tool that helps to build (mobile) applications with vite and jsx.
+Honey is a tool that helps to build (mobile) applications with vite and jsx.
 It requires no (except for vite) external dependencies and is incredibly fast.
 
 THIS TOOL IS IN VERY EARLY STAGES AND SHOUDN'T BE USED IN A PRODUCTION APP YET
 
 ### App
 
-The entry point of your application is the `CeramicApp` function, here you can configure everything about it.
+The entry point of your application is the `HoneyApp` function, here you can configure everything about it.
 As of writing this, the only functional configuration is for the page transition.
 You can create a new transitions with a preset, or make all the keyframes yourself, the syntax is the same as the native element.animate function.
 
 ```jsx
-const App = CeramicApp({
+const App = HoneyApp({
   root: document.querySelector("#app"),
   config: {
     transition: new Transition("fade", {
@@ -71,7 +71,7 @@ NOTE: Routing isn't finalized yet, so it will experience a lot of changes in the
 Routes are defined by calling the `defineRoutes` function, which looks something like this
 
 ```jsx
-import { defineRoutes } from "ceramic-app";
+import { defineRoutes } from "@honeyjs/core";
 
 import Home from "./pages/home";
 import About from "./pages/about";
@@ -92,23 +92,23 @@ export default defineRoutes([
 
 ### JSX
 
-Ceramic uses vite's (or esbuild's) builtin jsx transformer alongside a custom jsx parser that transforms it into h functions,
-which get parsed to native HTML elements by `ceramic/jsx-parser`.
-The vite config gets automatically updated once `ceramic/plugin` is used, however it isn't necessary.
+Honey uses vite's (or esbuild's) builtin jsx transformer alongside a custom jsx parser that transforms it into h functions,
+which get parsed to native HTML elements by `@honeyjs/core/jsx-runtime`.
+The vite config gets automatically updated once `@honeyjs/core/plugin` is used, however it isn't necessary.
 The plugin just adds a Hot Module Replacement accept into the main file, wich can be toggled by changing the `addHMRAccept` property of the first parameter, which will look like this
 
 ```js
 import { defineConfig } from "vite";
-import ceramic from "ceramic-app/plugin";
+import honey from "@honeyjs/core/plugin";
 
 export default defineConfig({
-  plugins: [ceramic({ addHMRAccept: true })],
+  plugins: [honey({ addHMRAccept: true })],
 });
 ```
 
 ### Reactivity
 
-Ceramic also exposes some methods for reactivity, which are heavily inspired by solid.js
+Honey also exposes some methods for reactivity, which are heavily inspired by solid.js
 
 ```js
 const [count, setCount] = createSignal(0);
@@ -140,4 +140,23 @@ One drawback is that when using the reactive value in jsx, you have to pass it a
 <p>count: {count()}</p>         // Won't update the value
 <p>count: {() => count()}</p>   // Will update
 <p>count: {count}</p>           // This also works
+```
+
+### Page navigation
+
+Create all of the pages and arrange them like this, it's the same as the router, but for mobile navigation
+
+```jsx
+export default function () {
+  return (
+    <Router swipe="horizontal">
+      <Route path="/messages" component={Messages} />
+      <Route path="/" component={Home} /> {/* This is the landing page; indicated by the path property; `/` is the starting route */}
+      <Route path="/friends" component={Friends} />
+      <Route path="/settings" component={Settings} >
+        <Route path="/settings/profile" {/* or `path="profile"` results in the same */} component={profile} />
+      </Route>
+    </Router>
+  );
+}
 ```
