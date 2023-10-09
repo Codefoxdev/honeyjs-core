@@ -18,7 +18,7 @@ export default function (options = {}) {
 
     config: () => ({
       esbuild: {
-        jsxInject: `import { h, Fragment } from "@honeyjs/core/jsx-runtime";`,
+        jsxInject: `import { h, Fragment } from "@honeyjs/core";`,
         jsxFactory: "h",
         jsxFragment: `Fragment`,
       },
