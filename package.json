@@ -1,6 +1,6 @@
 {
   "name": "@honeyjs/core",
-  "version": "0.2.0",
+  "version": "0.2.2",
   "description": "Honey is a tool to help build (mobile) applications with vite and jsx",
   "author": "Codefoxdev",
   "license": "MIT",
@@ -23,6 +23,8 @@
   "exports": {
     ".": "./src/index.js",
     "./plugin": "./src/vite-plugin.js",
+    "./internal": "./src/internal.js",
+    "./types": "./src/tools/types.js",
     "./jsx-runtime": "./src/jsx-runtime.js"
   }
 }

@@ -24,7 +24,7 @@ export function createNamespace(name) {
   const index = namespaces.indexOf(obj);
 
   return {
-    emit: (eventKey, data = {}, emitGlobal, cancelable = true) => {
+    emit: (eventKey, data = {}, emitGlobal = false, cancelable = true) => {
       if (eventKey.includes(":"))
         return emit(eventKey, data, emitGlobal, cancelable);
       else

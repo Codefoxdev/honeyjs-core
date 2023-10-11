@@ -1,4 +1,3 @@
-import { render } from "./render.js";
 import { h } from "../jsx-runtime.js";
 
 // TOOLS
@@ -108,10 +107,7 @@ function _render(index) {
   if (!historyList[index]) return false;
   const newRoute = routes.find(e => e.route == historyList[index]);
 
-  render(
-    newRoute,
-    currentRoute
-  );
+
   history.pushState({}, "", historyList[index]);
   currentRoute = newRoute;
 }

@@ -1,5 +1,3 @@
-import { render } from "./render.js";
-import { getRoute } from "./router.js";
 import { injectCSS } from "./styles.js";
 
 // TOOLS
@@ -27,18 +25,16 @@ export function HoneyApp(options) {
     // METHODS
     /**
      * Responsible for rendering the page at the initial page load
+     * @param {Function} component The component to render
      */
-    render: () => {
+    render: (component) => {
       if (AppRoot == null && !tryDefaultRoot()) return logger.error("app root not specified");
-      const route = getRoute();
       const res = events.emit("load", {}, true, false);
       if (res) {
         injectCSS(AppRoot);
-        render(route, null);
+        render(component);
         logger.log("app loaded successfully");
-        if (!AppStarted) {
-          AppStarted = true;
-        }
+        if (!AppStarted) AppStarted = true;
       }
     },
     on: events_listen,
@@ -47,6 +43,14 @@ export function HoneyApp(options) {
     events,
     environment: import.meta.env.MODE ?? "production",
   }
+}
+
+/**
+ * @param {Function} component 
+ */
+function render(component) {
+  const contents = component();
+  console.log(contents);
 }
 
 function tryDefaultRoot() {
