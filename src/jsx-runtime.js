@@ -33,22 +33,23 @@ export function h(tag, attrs, ...children) {
   if (!isFragment) parseAttributes(element, attrs, isCustom);
 
   if (!isCustom) {
-    for (let i = 2; i < arguments.length; i++) {
-      let child = arguments[i];
+    for (let i = 0; i < children.length; i++) {
+      let child = children[i];
       if (!isFragment && child != null) {
         if (typeof child == "function") {
           let lastChild;
           createEffect(() => {
+            // TODO: Add support for fragments as childs
             if (lastChild) element.removeChild(lastChild);
             let newChild = child()
+            console.log(child, newChild);
             if (newChild == null || newChild == undefined) return lastChild = null;
             newChild = newChild?.nodeType == null ? document.createTextNode(child().toString()) : child()
             element.appendChild(newChild);
             lastChild = newChild
           });
         }
-        else element.appendChild(child?.nodeType == null ? document.createTextNode(child.toString()) : child);
-
+        else element.appendChild(child?.nodeType == null ? document.createTextNode(child.toString()) : child)
       }
     }
   }

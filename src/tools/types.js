@@ -4,11 +4,6 @@
  *  @typedef {{
  *    root: HTMLElement;
  *    preset: "mobile" | "web" | null;
- *    config: {
- *      appBar: HTMLElement | Function;
- *      appBarLinks: Array<string>;
- *      transition: Honey.transition
- *    };
  *  }} Honey.AppOptions
  * 
  *  @typedef {{
