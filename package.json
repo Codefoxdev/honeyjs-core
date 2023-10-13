@@ -26,5 +26,8 @@
     "./internal": "./src/internal.js",
     "./types": "./src/tools/types.js",
     "./jsx-runtime": "./src/jsx-runtime.js"
+  },
+  "devDependencies": {
+    "vite": "^4.4.11"
   }
 }

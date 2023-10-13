@@ -31,7 +31,7 @@ export function HoneyApp(options) {
       if (AppRoot == null && !tryDefaultRoot()) return logger.error("app root not specified");
       const res = events.emit("load", {}, true, false);
       if (res) {
-        injectCSS(AppRoot);
+        injectCSS();
         render(component);
         logger.log("app loaded successfully");
         if (!AppStarted) AppStarted = true;
@@ -50,7 +50,16 @@ export function HoneyApp(options) {
  */
 function render(component) {
   const contents = component();
-  console.log(contents);
+  AppRoot.innerHTML = "";
+
+  if (Array.isArray(contents)) {
+    contents.flat().forEach(child => {
+      console.log(child);
+      AppRoot.appendChild(child);
+    })
+  } else {
+    AppRoot.appendChild(contents);
+  }
 }
 
 function tryDefaultRoot() {
@@ -60,3 +69,7 @@ function tryDefaultRoot() {
   AppRoot = AppOptions.root = fallback;
   return true;
 }
+
+/* export function handleHMR(data) {
+
+} */

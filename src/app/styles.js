@@ -1,18 +1,12 @@
 const globalStyle = document.createElement("style");
 globalStyle.innerHTML = `
-[wrapper=transition] {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+pos,
+[pos="__true"] {
+  position: absolute;
   pointer-events: none;
-}
-[filler=""] {
-  display: block;
 }
 `
 
-export function injectCSS(AppRoot) {
+export function injectCSS() {
   document.body.appendChild(globalStyle);
 }

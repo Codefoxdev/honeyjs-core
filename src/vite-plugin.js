@@ -13,7 +13,7 @@ export default function (options = {}) {
   let HMRAcceptFile = null;
 
   return {
-    name: "vite-plugin-honeyjs",
+    name: "vite-plugin-honey",
     enforce: "pre",
 
     config: () => ({
@@ -23,17 +23,25 @@ export default function (options = {}) {
         jsxFragment: `Fragment`,
       },
     }),
+
+    /**
+     * @param {import("vite").HmrContext} ctx 
+     */
+    handleHotUpdate(ctx) {
+
+    },
     async ShouldTransformCachedModuleHook() { return true; },
     async transform(src, id) {
       if (!id.match(REGEX.extension)) return;
 
-      // Transform if it is jsx/tsx
-      // if (id.match(/\.(tsx|jsx)$/)) src = transformJSX(src, id);
-
       // Add HMRAccept to entry point if `options.addHMRAccept` == true
       if (options.addHMRAccept == true && (!HMRAcceptFile || id == HMRAcceptFile)) {
         HMRAcceptFile = id;
-        src += `\nif (import.meta.hot) { import.meta.hot.accept() } \n// HMRAcceptFile: ${HMRAcceptFile}`;
+        src += `
+// Code injected by @honeyjs/core
+if (import.meta.hot) {
+  import.meta.hot.accept();
+}`;
       }
 
       return {
