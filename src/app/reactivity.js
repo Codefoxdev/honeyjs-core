@@ -6,6 +6,9 @@ function subscribe(running, subscriptions) {
   running.dependencies.add(subscriptions);
 }
 
+/**
+ * @type {import("../types/index.d.ts").createSignal}
+ */
 export function createSignal(value) {
   const subscriptions = new Set();
 
@@ -32,6 +35,9 @@ function cleanup(running) {
   running.dependencies.clear();
 }
 
+/**
+ * @type {import("../types/index.d.ts").createEffect}
+ */
 export function createEffect(fn) {
   const effect = {
     execute() {
@@ -49,6 +55,9 @@ export function createEffect(fn) {
   effect.execute();
 }
 
+/**
+ * @type {import("../types/index.d.ts").createMemo}
+ */
 export function createMemo(fn) {
   const [s, set] = createSignal();
   createEffect(() => set(fn()));

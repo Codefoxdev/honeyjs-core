@@ -1,3 +1,4 @@
+/// <reference path="../types/index.d.ts"/>
 import { injectCSS } from "./styles.js";
 
 // TOOLS
@@ -14,7 +15,7 @@ export let AppOptions = null;
 let AppStarted = false;
 
 /**
- * @param {Honey.AppOptions} options
+ * @type {import("../types/index.d.ts").HoneyApp}
  */
 export function HoneyApp(options) {
   logger.log("initializing...");

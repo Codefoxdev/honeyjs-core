@@ -5,15 +5,15 @@ const REGEX = {
 
 /**
  * @param {object} options
- * @param {boolean | null} options.addHMRAccept
- * @returns 
+ * @param {boolean} options.addHMRAccept
+ * @param {boolean} options.transformCached Set this to true if you're experiencing issues regarding vite's cache
  */
 export default function (options = {}) {
   let parsed = [];
   let HMRAcceptFile = null;
 
   return {
-    name: "vite-plugin-honey",
+    name: "@honeyjs/core",
     enforce: "pre",
 
     config: () => ({
@@ -30,7 +30,7 @@ export default function (options = {}) {
     handleHotUpdate(ctx) {
 
     },
-    async ShouldTransformCachedModuleHook() { return true; },
+    async ShouldTransformCachedModuleHook() { return options.transformCached == true; },
     async transform(src, id) {
       if (!id.match(REGEX.extension)) return;
 

@@ -10,7 +10,7 @@
     "spa"
   ],
   "type": "module",
-  "types": "./src/app/types.js",
+  "types": "./src/types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/codefoxdev/honeyjs-core.git"
@@ -21,8 +21,14 @@
   "homepage": "https://github.com/codefoxdev/honeyjs-core#readme",
   "main": "./src/index.js",
   "exports": {
-    ".": "./src/index.js",
-    "./plugin": "./src/vite-plugin.js",
+    ".": {
+      "import": "./src/index.js",
+      "types": "./src/types/index.d.ts"
+    },
+    "./plugin": {
+      "import": "./src/vite-plugin.js",
+      "types": "./src/types/plugin.d.ts"
+    },
     "./internal": "./src/internal.js",
     "./types": "./src/tools/types.js",
     "./jsx-runtime": "./src/jsx-runtime.js"
