@@ -22,6 +22,11 @@ export function HoneyApp(options) {
   AppRoot = options.root;
   AppOptions = options;
 
+  if (AppStarted) {
+    logger.warn("app re-initialized, app and global event listeners will be removed");
+    events.removeListeners();
+  }
+
   return {
     // METHODS
     /**
@@ -29,13 +34,17 @@ export function HoneyApp(options) {
      * @param {Function} component The component to render
      */
     render: (component) => {
+      if (AppStarted) logger.warn("app already rendered, rerendering may not result in expected results");
       if (AppRoot == null && !tryDefaultRoot()) return logger.error("app root not specified");
       const res = events.emit("load", {}, true, false);
       if (res) {
         injectCSS();
         render(component);
         logger.log("app loaded successfully");
-        if (!AppStarted) AppStarted = true;
+        if (!AppStarted) {
+          AppStarted = true;
+          events.emit("mount", {}, true, false);
+        }
       }
     },
     on: events_listen,
@@ -44,6 +53,14 @@ export function HoneyApp(options) {
     events,
     environment: import.meta.env.MODE ?? "production",
   }
+}
+
+export function onMount(fn) {
+  events.listen("mount", fn);
+}
+
+export function onCleanup(fn) {
+  events.listen("cleanup", fn);
 }
 
 /**
@@ -55,7 +72,6 @@ function render(component) {
 
   if (Array.isArray(contents)) {
     contents.flat().forEach(child => {
-      console.log(child);
       AppRoot.appendChild(child);
     })
   } else {

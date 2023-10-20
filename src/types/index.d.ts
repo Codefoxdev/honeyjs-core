@@ -17,7 +17,7 @@ declare interface App {
   /**
    * Should be called on the initial page load, and renders the app to the specified root.
    */
-  render: (component: Function) => void;
+  render: (component: Component) => void;
 
   /**
    * Registers an event, that can be cancelled by returning false in a synchronous function or by calling `e.preventDefault()`
@@ -71,3 +71,61 @@ export function createEffect(fn: Function): void;
  * @param fn The memo function
  */
 export function createMemo(fn: Function): () => any;
+
+/**
+ * Creates a ref that returns to functions:
+ * - get; returns the element on which the ref is attached, this value changes when onMount is called
+ * - set; attach this to an element
+ * This function is currently the same as creating an effect, but with an initial value of `null`
+ */
+export function createRef(): [
+  get: () => HTMLElement,
+  set: (e: HTMLElement) => HTMLElement
+];
+
+/**
+ * Fires when the element are mounted; when the app is loaded.
+ * Usefull for refs and creating one-time side effects
+ */
+export function onMount(fn: Function): void;
+
+/**
+ * Fires when the app is unloaded, usefull for cleaning up effect
+ */
+export function onCleanup(fn: Function): void;
+
+declare interface GestureOptions {
+  target: HTMLElement;
+  distance: number;
+  alias: string;
+  direction: "horizontal" | "vertical" | "both" | undefined;
+  autoStart: boolean;
+
+  onStart: (e: GestureData) => void;
+  onMove: (e: GestureData) => void;
+  onEnd: (e: GestureData) => void;
+}
+
+declare interface GestureMethods {
+  start: () => void;
+  stop: () => void;
+  destroy: () => void;
+}
+
+declare interface GestureData {
+  start: { x: number; y: number };
+  velocity: { x: number; y: number };
+  current: { x: number; y: number };
+  delta: { x: number; y: number };
+  direction: "horizontal" | "vertical" | null;
+  hasMovedDistance: boolean;
+
+  end: () => void;
+  manuallyEnded: boolean;
+}
+
+export function createGesture(options: GestureOptions): GestureMethods;
+
+// External Types
+export type Component = HTMLElement | Function;
+export type Color = string;

@@ -24,6 +24,8 @@ export function createSignal(value) {
     for (const sub of [...subscriptions]) {
       sub.execute();
     }
+
+    return value;
   };
   return [read, write];
 }
@@ -62,4 +64,11 @@ export function createMemo(fn) {
   const [s, set] = createSignal();
   createEffect(() => set(fn()));
   return s;
+}
+
+/**
+ * @type {import("../types/index.d.ts").createRef}
+ */
+export function createRef() {
+  return createSignal(null);
 }

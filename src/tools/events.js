@@ -1,3 +1,7 @@
+import { Logger } from "./logger.js";
+
+const loggger = new Logger("events");
+
 /**
  *  @type {Array<{
  *    name: string,
@@ -24,17 +28,21 @@ export function createNamespace(name) {
   const index = namespaces.indexOf(obj);
 
   return {
-    emit: (eventKey, data = {}, emitGlobal = false, cancelable = true) => {
+    emit(eventKey, data = {}, emitGlobal = false, cancelable = true) {
       if (eventKey.includes(":"))
         return emit(eventKey, data, emitGlobal, cancelable);
       else
         return emit(`${name}:${eventKey}`, data, emitGlobal, cancelable)
     },
-    listen: (eventKey, callback) => {
+    listen(eventKey, callback) {
       if (eventKey.includes(":"))
         return listen(eventKey, callback);
       else
         return listen(`${name}:${eventKey}`, callback);
+    },
+    removeListeners() {
+      namespaces[index].listeners = [];
+      namespaces[0].listeners = [];
     }
   }
 }
@@ -55,6 +63,9 @@ export function emit(eventKey, data = {}, emitGlobal = false, cancelable = true)
     .find(e => e.name == namespace)?.listeners
     ?.find(e => e.event == event)?.callbacks;
 
+  loggger.logVerbose(eventKey);
+  if (emitGlobal) loggger.logVerbose(event);
+
   if (callbacks) {
     for (const callback of callbacks) {
       const res = callback(data);
@@ -65,9 +76,7 @@ export function emit(eventKey, data = {}, emitGlobal = false, cancelable = true)
   if (emitGlobal) {
     namespaces[0].listeners
       .find(e => e.event == event)?.callbacks
-      ?.map(e => {
-        if (e(data) == false) prevented = true;
-      });
+      ?.map(e => e(data) == false ? prevented = true : e);
   }
 
   if ((prevented == true || data.defaultPrevented == true) && cancelable == true) return false;

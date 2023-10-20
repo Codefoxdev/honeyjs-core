@@ -40,6 +40,10 @@ export function h(tag, attrs, ...children) {
       else if (event(name)) registerElementEventListener(element, event(name), value);
       else {
         if (name == "style" && typeof value == "object") style(element, value);
+        else if (name == "ref") {
+          if (typeof value == "function") value(element);
+          else if (typeof value == "object") value.current = element;
+        }
         else if (typeof value == "function") createEffect(() => element.setAttribute(property(name), value()));
         else element.setAttribute(property(name), value);
       }
