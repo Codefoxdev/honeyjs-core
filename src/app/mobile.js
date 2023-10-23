@@ -15,9 +15,7 @@ export function createGesture(options) {
     onmove = (e) => {
       if (!data.manuallyEnded) handleMove(options, e, data);
     },
-    onend = (e) => {
-      if (!data.manuallyEnded) handleEnd(options, e, data);
-    }
+    onend = (e) => handleEnd(options, e, data);
 
   data = {
     start: { x: null, y: null },
@@ -66,6 +64,7 @@ export function createGesture(options) {
  * @param {import("../types/index.d.ts").GestureData} data 
  */
 function handleStart(options, event, data) {
+  data.manuallyEnded = false;
   data.start.x = data.current.x = event.touches[0].clientX;
   data.start.y = data.current.y = event.touches[0].clientY;
 
@@ -104,7 +103,7 @@ function handleMove(options, event, data) {
  */
 function handleEnd(options, event, data) {
   // Make deep copy to avoid data changing
-  if (typeof options.onEnd == "function") options.onEnd(JSON.parse(JSON.stringify(data)));
+  if (typeof options.onEnd == "function" && data.manuallyEnded == false) options.onEnd(JSON.parse(JSON.stringify(data)));
 
   data.start = { x: null, y: null }
   data.velocity = { x: null, y: null }
@@ -112,5 +111,4 @@ function handleEnd(options, event, data) {
   data.delta = { x: null, y: null }
   data.hasMovedDistance = false;
   data.direction = null;
-  data.manuallyEnded = false;
 }

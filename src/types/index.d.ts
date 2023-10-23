@@ -61,7 +61,7 @@ export function createSignal(
 ): [get: () => any, set: (value: any) => any];
 
 /**
- * Creates an effect that runs when an effect used in the effect function changes
+ * Creates an effect that runs when a signal used in the effect function changes
  * @param fn The effect function itself
  */
 export function createEffect(fn: Function): void;

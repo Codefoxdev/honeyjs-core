@@ -71,7 +71,8 @@ function render(component) {
   AppRoot.innerHTML = "";
 
   if (Array.isArray(contents)) {
-    contents.flat().forEach(child => {
+    contents.flat(Infinity).forEach(child => {
+      console.log(child);
       AppRoot.appendChild(child);
     })
   } else {
