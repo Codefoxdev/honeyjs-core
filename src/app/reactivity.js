@@ -1,4 +1,3 @@
-// This is our work in progress Reactive Library
 const context = [];
 
 function subscribe(running, subscriptions) {
@@ -9,7 +8,9 @@ function subscribe(running, subscriptions) {
 /**
  * @type {import("../types/index.d.ts").createSignal}
  */
-export function createSignal(value) {
+export function createSignal(value, options) {
+  options ??= {};
+  options.equals ??= true;
   const subscriptions = new Set();
 
   const read = () => {
@@ -19,15 +20,17 @@ export function createSignal(value) {
   };
 
   const write = (nextValue) => {
+    if (value === nextValue && options.equals == true) return value;
+    let prev = value;
     value = nextValue;
-
-    for (const sub of [...subscriptions]) {
-      sub.execute();
-    }
-
+    for (const sub of [...subscriptions]) sub.execute(prev);
     return value;
   };
   return [read, write];
+}
+
+export function createStaticSignal() {
+
 }
 
 function cleanup(running) {
@@ -42,11 +45,11 @@ function cleanup(running) {
  */
 export function createEffect(fn) {
   const effect = {
-    execute() {
+    execute(prev = null) {
       cleanup(effect);
       context.push(effect);
       try {
-        fn();
+        fn(prev);
       } finally {
         context.pop();
       }

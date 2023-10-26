@@ -1,3 +1,5 @@
+import type { Component, ComponentProps } from "./jsx.d.ts";
+
 declare interface AppOptions {
   /**
    * The root of the project in the index.html file,
@@ -57,14 +59,24 @@ export function HoneyApp(options: AppOptions): App;
  * @param value The initial value that the signal has
  */
 export function createSignal(
-  value: any
+  value: any,
+  options?: {
+    /**
+     * Whether or not to rerun the effects when the setter value is the same as the previous value.
+     * If it is false, the effects will rerun everytime the setter is called, doesn't matter if the value has changed
+     * @default true
+     */
+    equals: boolean;
+  }
 ): [get: () => any, set: (value: any) => any];
+
+export function createStaticSignal();
 
 /**
  * Creates an effect that runs when a signal used in the effect function changes
  * @param fn The effect function itself
  */
-export function createEffect(fn: Function): void;
+export function createEffect(fn: (prev: any) => any): void;
 
 /**
  * Creates a memoization function, this helps with performance as it caches previous results
@@ -127,5 +139,6 @@ declare interface GestureData {
 export function createGesture(options: GestureOptions): GestureMethods;
 
 // External Types
-export type Component = HTMLElement | Function;
 export type Color = string;
+
+export { Component, ComponentProps };
