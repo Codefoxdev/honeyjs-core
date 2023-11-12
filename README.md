@@ -9,25 +9,21 @@ THIS TOOL IS IN VERY EARLY STAGES AND SHOUDN'T BE USED IN A PRODUCTION APP YET
 
 The entry point of your application is the `HoneyApp` function, here you can configure everything about it.
 As of writing this, the only functional configuration is for the page transition.
-You can create a new transitions with a preset, or make all the keyframes yourself, the syntax is the same as the native element.animate function.
 
 ```jsx
 const App = HoneyApp({
   root: document.querySelector("#app"),
-  config: {
-    transition: new Transition("fade", {
-      duration: 200,
-      easing: "ease",
-      fill: "forwards",
-    }),
-  },
 });
 ```
 
 Now that you have setup your app, you should render it
 
 ```jsx
-App.render();
+App.render(() => (
+  <>
+    <h1>Hello, world</h1>
+  </>
+));
 ```
 
 This will render the page provided at the current pathname, see [routing](#routing) for more info.
@@ -64,31 +60,6 @@ export default function () {
 However components also have some special properties, like the `preserve` keyword.
 When you switch between pages and you have the same element on both pages with a `preserve` keyword, that element will not transition, it will be left untouched.
 This is helpfull when you transition between pages, but you want the navbar to stay the same.
-
-### Routing
-
-NOTE: Routing isn't finalized yet, so it will experience a lot of changes in the future
-Routes are defined by calling the `defineRoutes` function, which looks something like this
-
-```jsx
-import { defineRoutes } from "@honeyjs/core";
-
-import Home from "./pages/home";
-import About from "./pages/about";
-
-export default defineRoutes([
-  {
-    name: "home",
-    route: "/",
-    component: <Home />,
-  },
-  {
-    name: "about",
-    route: "/about",
-    component: <About />,
-  },
-]);
-```
 
 ### JSX
 
@@ -140,23 +111,4 @@ One drawback is that when using the reactive value in jsx, you have to pass it a
 <p>count: {count()}</p>         // Won't update the value
 <p>count: {() => count()}</p>   // Will update
 <p>count: {count}</p>           // This also works
-```
-
-### Page navigation
-
-Create all of the pages and arrange them like this, it's the same as the router, but for mobile navigation
-
-```jsx
-export default function () {
-  return (
-    <Router swipe="horizontal">
-      <Route path="/messages" component={Messages} />
-      <Route path="/" component={Home} /> {/* This is the landing page; indicated by the path property; `/` is the starting route */}
-      <Route path="/friends" component={Friends} />
-      <Route path="/settings" component={Settings} >
-        <Route path="/settings/profile" {/* or `path="profile"` results in the same */} component={profile} />
-      </Route>
-    </Router>
-  );
-}
 ```
