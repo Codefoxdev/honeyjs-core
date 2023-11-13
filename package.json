@@ -1,6 +1,6 @@
 {
   "name": "@honeyjs/core",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Honey is a tool to help build (mobile) applications with vite and jsx",
   "author": "Codefoxdev",
   "license": "MIT",
